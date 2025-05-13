@@ -1,0 +1,18 @@
+{
+	"name": "ProGigStudio",
+	"scripts": {
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy --minify",
+		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
+	},
+	"dependencies": {
+		"@passwordless-id/webauthn": "^2.3.0",
+		"@tailwindcss/cli": "^4.1.5",
+		"hono": "^4.7.8",
+		"nanoid": "^5.1.5",
+		"tailwindcss": "^4.1.5"
+	},
+	"devDependencies": {
+		"wrangler": "^4.4.0"
+	}
+}

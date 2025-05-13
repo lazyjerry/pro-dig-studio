@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>接案仔 Office</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+		<style>
+			.menu-item.active {
+				background-color: #e5e7eb;
+				border-left: 4px solid #3b82f6;
+			}
+			.menu-item:hover:not(.active) {
+				background-color: #f3f4f6;
+			}
+			iframe {
+				transition: opacity 0.3s ease;
+			}
+			iframe.loading {
+				opacity: 0.5;
+			}
+			.url-token-group {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1rem;
+			}
+			@media (max-width: 640px) {
+				.url-token-group {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body class="bg-gray-100 h-screen flex overflow-hidden">
+		<!-- Sidebar Menu -->
+		<div class="w-64 bg-white h-full shadow-md flex flex-col">
+			<div class="p-4 border-b">
+				<h1 class="text-xl font-bold text-gray-800">接案仔 Office</h1>
+			</div>
+
+			<nav class="flex-1 overflow-y-auto">
+				<ul class="py-2">
+					<li>
+						<a
+							href="#"
+							data-url="https://goblinapp.com/"
+							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
+						>
+							<i class="fas fa-file-invoice-dollar mr-3"></i>
+							<span>報價單</span>
+						</a>
+					</li>
+					<li>
+						<a
+							href="#"
+							data-url="https://goblinapp.com/"
+							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
+						>
+							<i class="fas fa-clipboard-list mr-3"></i>
+							<span>會議記錄</span>
+						</a>
+					</li>
+					<li>
+						<a
+							href="#"
+							data-url="https://goblinapp.com/"
+							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
+						>
+							<i class="fas fa-calendar-day mr-3"></i>
+							<span>工作日誌</span>
+						</a>
+					</li>
+					<li>
+						<a
+							href="#"
+							data-url="https://goblinapp.com/"
+							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
+						>
+							<i class="fas fa-file-alt mr-3"></i>
+							<span>勞報單</span>
+						</a>
+					</li>
+					<li>
+						<a
+							href="#"
+							data-url="https://goblinapp.com/"
+							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
+						>
+							<i class="fas fa-book mr-3"></i>
+							<span>筆記本本</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" id="settings-btn" class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900">
+							<i class="fas fa-cog mr-3"></i>
+							<span>設定</span>
+						</a>
+					</li>
+				</ul>
+
+				<div class="px-3 py-2 border-t">
+					<h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">額外頁面</h3>
+					<div id="extra-pages-container" class="mt-2">
+						<!-- Extra pages will be added here dynamically -->
+					</div>
+					<button
+						id="add-page-btn"
+						class="mt-2 w-full text-left text-blue-500 hover:text-blue-700 text-sm flex items-center"
+					>
+						<i class="fas fa-plus-circle mr-2"></i>
+						新增頁面
+					</button>
+				</div>
+			</nav>
+
+			<div class="p-4 border-t text-sm text-gray-500">
+				<div>版本 v1.0.0</div>
+				<div class="mt-1">© 2023 Admin Console</div>
+			</div>
+		</div>
+
+		<!-- Main Content -->
+		<div class="flex-1 flex flex-col overflow-hidden">
+			<!-- Iframe Container -->
+			<div id="iframe-container" class="flex-1 overflow-hidden">
+				<iframe id="content-iframe" src="about:blank" frameborder="0" class="w-full h-full"></iframe>
+			</div>
+
+			<!-- Settings Panel (hidden by default) -->
+			<div id="settings-panel" class="hidden flex-1 overflow-y-auto p-6 bg-white">
+				<h2 class="text-2xl font-bold text-gray-800 mb-6">系統設定</h2>
+
+				<form id="settings-form" class="space-y-6">
+					<div class="bg-white shadow rounded-lg p-6">
+						<h3 class="text-lg font-medium text-gray-900 mb-4">頁面設定</h3>
+
+						<div class="space-y-6">
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">報價單</label>
+								<div class="url-token-group">
+									<div>
+										<label for="quote-url" class="block text-xs font-medium text-gray-500 mb-1">URL</label>
+										<input
+											type="url"
+											id="quote-url"
+											name="quote-url"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+									<div>
+										<label for="quote-token" class="block text-xs font-medium text-gray-500 mb-1">TOKEN</label>
+										<input
+											type="password"
+											id="quote-token"
+											name="quote-token"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">會議記錄</label>
+								<div class="url-token-group">
+									<div>
+										<label for="meeting-url" class="block text-xs font-medium text-gray-500 mb-1">URL</label>
+										<input
+											type="url"
+											id="meeting-url"
+											name="meeting-url"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+									<div>
+										<label for="meeting-token" class="block text-xs font-medium text-gray-500 mb-1">TOKEN</label>
+										<input
+											type="password"
+											id="meeting-token"
+											name="meeting-token"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">工作日誌</label>
+								<div class="url-token-group">
+									<div>
+										<label for="worklog-url" class="block text-xs font-medium text-gray-500 mb-1">URL</label>
+										<input
+											type="url"
+											id="worklog-url"
+											name="worklog-url"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+									<div>
+										<label for="worklog-token" class="block text-xs font-medium text-gray-500 mb-1">TOKEN</label>
+										<input
+											type="password"
+											id="worklog-token"
+											name="worklog-token"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">勞報單</label>
+								<div class="url-token-group">
+									<div>
+										<label for="invoice-url" class="block text-xs font-medium text-gray-500 mb-1">URL</label>
+										<input
+											type="url"
+											id="invoice-url"
+											name="invoice-url"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+									<div>
+										<label for="invoice-token" class="block text-xs font-medium text-gray-500 mb-1">TOKEN</label>
+										<input
+											type="password"
+											id="invoice-token"
+											name="invoice-token"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+								</div>
+							</div>
+
+							<div>
+								<label class="block text-sm font-medium text-gray-700 mb-1">筆記本本</label>
+								<div class="url-token-group">
+									<div>
+										<label for="notes-url" class="block text-xs font-medium text-gray-500 mb-1">URL</label>
+										<input
+											type="url"
+											id="notes-url"
+											name="notes-url"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+									<div>
+										<label for="notes-token" class="block text-xs font-medium text-gray-500 mb-1">TOKEN</label>
+										<input
+											type="password"
+											id="notes-token"
+											name="notes-token"
+											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="bg-white shadow rounded-lg p-6">
+						<h3 class="text-lg font-medium text-gray-900 mb-4">資料庫設定</h3>
+
+						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+							<div>
+								<label for="db-api-url" class="block text-sm font-medium text-gray-700">資料庫 API URL</label>
+								<input
+									type="url"
+									id="db-api-url"
+									name="db-api-url"
+									class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+								/>
+							</div>
+
+							<div>
+								<label for="db-api-password" class="block text-sm font-medium text-gray-700">資料庫 API 密碼</label>
+								<input
+									type="password"
+									id="db-api-password"
+									name="db-api-password"
+									class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+								/>
+							</div>
+						</div>
+					</div>
+
+					<div class="bg-white shadow rounded-lg p-6">
+						<h3 class="text-lg font-medium text-gray-900 mb-4">API 設定</h3>
+
+						<div>
+							<label for="openai-token" class="block text-sm font-medium text-gray-700">OpenAI API Token</label>
+							<input
+								type="password"
+								id="openai-token"
+								name="openai-token"
+								class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+							/>
+						</div>
+					</div>
+
+					<div class="flex justify-end">
+						<button
+							type="button"
+							id="cancel-settings"
+							class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+						>
+							取消
+						</button>
+						<button
+							type="submit"
+							class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+						>
+							儲存設定
+						</button>
+					</div>
+				</form>
+			</div>
+
+			<!-- Add Page Modal (hidden by default) -->
+			<div
+				id="add-page-modal"
+				class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50"
+			>
+				<div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+					<div class="flex justify-between items-center mb-4">
+						<h3 class="text-lg font-medium text-gray-900">新增額外頁面</h3>
+						<button id="close-modal" class="text-gray-400 hover:text-gray-500">
+							<i class="fas fa-times"></i>
+						</button>
+					</div>
+
+					<div class="space-y-4">
+						<div>
+							<label for="page-label" class="block text-sm font-medium text-gray-700">頁面標籤</label>
+							<input
+								type="text"
+								id="page-label"
+								class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+							/>
+						</div>
+
+						<div>
+							<label for="page-url" class="block text-sm font-medium text-gray-700">頁面 URL</label>
+							<input
+								type="url"
+								id="page-url"
+								class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+							/>
+						</div>
+
+						<div>
+							<label for="page-token" class="block text-sm font-medium text-gray-700">頁面 TOKEN</label>
+							<input
+								type="password"
+								id="page-token"
+								class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+							/>
+						</div>
+					</div>
+
+					<div class="mt-6 flex justify-end">
+						<button
+							type="button"
+							id="cancel-add-page"
+							class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+						>
+							取消
+						</button>
+						<button
+							type="button"
+							id="confirm-add-page"
+							class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+						>
+							新增
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// DOM elements
+				const iframe = document.getElementById("content-iframe");
+				const iframeContainer = document.getElementById("iframe-container");
+				const settingsPanel = document.getElementById("settings-panel");
+				const settingsBtn = document.getElementById("settings-btn");
+				const cancelSettings = document.getElementById("cancel-settings");
+				const menuItems = document.querySelectorAll(".menu-item:not(#settings-btn)");
+				const addPageBtn = document.getElementById("add-page-btn");
+				const addPageModal = document.getElementById("add-page-modal");
+				const closeModal = document.getElementById("close-modal");
+				const cancelAddPage = document.getElementById("cancel-add-page");
+				const confirmAddPage = document.getElementById("confirm-add-page");
+				const extraPagesContainer = document.getElementById("extra-pages-container");
+				const settingsForm = document.getElementById("settings-form");
+
+				// Load default page
+				loadIframe("https://goblinapp.com/");
+
+				// Menu item click handler
+				menuItems.forEach((item) => {
+					item.addEventListener("click", function (e) {
+						e.preventDefault();
+
+						// Remove active class from all items
+						document.querySelectorAll(".menu-item").forEach((el) => {
+							el.classList.remove("active");
+						});
+
+						// Add active class to clicked item
+						this.classList.add("active");
+
+						// Load the URL in iframe
+						const url = this.getAttribute("data-url");
+						loadIframe(url);
+
+						// Show iframe container and hide settings panel
+						iframeContainer.classList.remove("hidden");
+						settingsPanel.classList.add("hidden");
+					});
+				});
+
+				// Settings button click handler
+				settingsBtn.addEventListener("click", function (e) {
+					e.preventDefault();
+
+					// Remove active class from all items
+					document.querySelectorAll(".menu-item").forEach((el) => {
+						el.classList.remove("active");
+					});
+
+					// Add active class to settings button
+					this.classList.add("active");
+
+					// Hide iframe container and show settings panel
+					iframeContainer.classList.add("hidden");
+					settingsPanel.classList.remove("hidden");
+				});
+
+				// Cancel settings button click handler
+				cancelSettings.addEventListener("click", function () {
+					// Remove active class from settings button
+					settingsBtn.classList.remove("active");
+
+					// Show iframe container and hide settings panel
+					iframeContainer.classList.remove("hidden");
+					settingsPanel.classList.add("hidden");
+
+					// Load default page
+					loadIframe("https://goblinapp.com/");
+				});
+
+				// Add page button click handler
+				addPageBtn.addEventListener("click", function () {
+					addPageModal.classList.remove("hidden");
+				});
+
+				// Close modal button click handler
+				closeModal.addEventListener("click", function () {
+					addPageModal.classList.add("hidden");
+				});
+
+				// Cancel add page button click handler
+				cancelAddPage.addEventListener("click", function () {
+					addPageModal.classList.add("hidden");
+				});
+
+				// Confirm add page button click handler
+				confirmAddPage.addEventListener("click", function () {
+					const label = document.getElementById("page-label").value;
+					const url = document.getElementById("page-url").value;
+					const token = document.getElementById("page-token").value;
+
+					if (label && url) {
+						addExtraPage(label, url, token);
+						addPageModal.classList.add("hidden");
+
+						// Clear inputs
+						document.getElementById("page-label").value = "";
+						document.getElementById("page-url").value = "";
+						document.getElementById("page-token").value = "";
+					} else {
+						alert("請填寫所有必要欄位");
+					}
+				});
+
+				// Settings form submit handler
+				settingsForm.addEventListener("submit", function (e) {
+					e.preventDefault();
+
+					// Save settings to localStorage
+					const settings = {
+						quote: {
+							url: document.getElementById("quote-url").value,
+							token: document.getElementById("quote-token").value,
+						},
+						meeting: {
+							url: document.getElementById("meeting-url").value,
+							token: document.getElementById("meeting-token").value,
+						},
+						worklog: {
+							url: document.getElementById("worklog-url").value,
+							token: document.getElementById("worklog-token").value,
+						},
+						invoice: {
+							url: document.getElementById("invoice-url").value,
+							token: document.getElementById("invoice-token").value,
+						},
+						notes: {
+							url: document.getElementById("notes-url").value,
+							token: document.getElementById("notes-token").value,
+						},
+						db: {
+							url: document.getElementById("db-api-url").value,
+							password: document.getElementById("db-api-password").value,
+						},
+						login: {
+							username: document.getElementById("login-username").value,
+							password: document.getElementById("login-password").value,
+						},
+						openai: {
+							token: document.getElementById("openai-token").value,
+						},
+					};
+
+					localStorage.setItem("adminConsoleSettings", JSON.stringify(settings));
+					alert("設定已儲存");
+				});
+
+				// Load settings from localStorage
+				function loadSettings() {
+					const savedSettings = localStorage.getItem("adminConsoleSettings");
+					if (savedSettings) {
+						const settings = JSON.parse(savedSettings);
+
+						// Page URLs and tokens
+						document.getElementById("quote-url").value = settings.quote.url || "";
+						document.getElementById("quote-token").value = settings.quote.token || "";
+						document.getElementById("meeting-url").value = settings.meeting.url || "";
+						document.getElementById("meeting-token").value = settings.meeting.token || "";
+						document.getElementById("worklog-url").value = settings.worklog.url || "";
+						document.getElementById("worklog-token").value = settings.worklog.token || "";
+						document.getElementById("invoice-url").value = settings.invoice.url || "";
+						document.getElementById("invoice-token").value = settings.invoice.token || "";
+						document.getElementById("notes-url").value = settings.notes.url || "";
+						document.getElementById("notes-token").value = settings.notes.token || "";
+
+						// Database settings
+						document.getElementById("db-api-url").value = settings.db.url || "";
+						document.getElementById("db-api-password").value = settings.db.password || "";
+
+						// Login settings
+						document.getElementById("login-username").value = settings.login.username || "";
+						document.getElementById("login-password").value = settings.login.password || "";
+
+						// OpenAI token
+						document.getElementById("openai-token").value = settings.openai.token || "";
+					}
+				}
+
+				// Load iframe function
+				function loadIframe(url) {
+					iframe.classList.add("loading");
+					iframe.src = url;
+
+					iframe.onload = function () {
+						iframe.classList.remove("loading");
+					};
+				}
+
+				// Add extra page function
+				function addExtraPage(label, url, token = "") {
+					const pageId = "extra-page-" + Date.now();
+
+					const pageItem = document.createElement("div");
+					pageItem.className = "flex items-center justify-between group";
+					pageItem.innerHTML = `
+                    <a href="#" data-url="${url}" data-token="${token}" class="menu-item flex items-center p-2 pl-3 text-gray-700 hover:text-gray-900 w-full rounded">
+                        <i class="fas fa-external-link-alt mr-3 text-sm"></i>
+                        <span class="truncate">${label}</span>
+                    </a>
+                    <button class="delete-page opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-2 mr-1" data-id="${pageId}">
+                        <i class="fas fa-trash-alt text-sm"></i>
+                    </button>
+                `;
+
+					const container = document.createElement("li");
+					container.id = pageId;
+					container.appendChild(pageItem);
+
+					extraPagesContainer.appendChild(container);
+
+					// Add click handler for the new page
+					const newPageLink = container.querySelector("a");
+					newPageLink.addEventListener("click", function (e) {
+						e.preventDefault();
+
+						// Remove active class from all items
+						document.querySelectorAll(".menu-item").forEach((el) => {
+							el.classList.remove("active");
+						});
+
+						// Add active class to clicked item
+						this.classList.add("active");
+
+						// Load the URL in iframe
+						const url = this.getAttribute("data-url");
+						loadIframe(url);
+
+						// Show iframe container and hide settings panel
+						iframeContainer.classList.remove("hidden");
+						settingsPanel.classList.add("hidden");
+					});
+
+					// Add delete handler
+					const deleteBtn = container.querySelector(".delete-page");
+					deleteBtn.addEventListener("click", function (e) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						if (confirm("確定要刪除此頁面嗎？")) {
+							const id = this.getAttribute("data-id");
+							const pageToRemove = document.getElementById(id);
+							if (pageToRemove) {
+								extraPagesContainer.removeChild(pageToRemove);
+							}
+						}
+					});
+				}
+
+				// Load settings when page loads
+				loadSettings();
+
+				// Load any saved extra pages from localStorage (in a real app)
+				// For demo, we'll add one example
+				addExtraPage("範例頁面", "https://goblinapp.com/", "example-token-123");
+			});
+		</script>
+	</body>
+</html>
