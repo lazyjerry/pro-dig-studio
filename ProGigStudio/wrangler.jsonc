@@ -1,0 +1,16 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "pro-gig-studio",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-05-08",
+	"kv_namespaces": [
+		{
+			"binding": "JOFFICE_AUTH_KV",
+			"id": "338fa2d736674446a55cd699b98b77e9"
+		}
+	],
+	"assets": {
+		"directory": "./public",
+		"binding": "ASSETS"
+	}
+}
