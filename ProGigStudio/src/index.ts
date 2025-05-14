@@ -230,7 +230,7 @@ app.put("/api/config", async (c) => {
 app.get("/", (c) => c.redirect("/dashboard"));
 
 // 404
-// app.notFound((c) => c.redirect("/404.html"));
+app.notFound((c) => c.redirect("/404.html"));
 
 /* ---- 路由掛載位置，放在 authRequired 之後即可 ---- */
 app.route("/logs", worklogRouter); // 自動支援 /logs 與 /logs/*

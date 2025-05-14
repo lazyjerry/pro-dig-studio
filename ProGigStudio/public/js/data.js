@@ -1,4 +1,5 @@
 /*
+需要指定參數
 	const API_BASE = "/api/data";
   const DATA_TYPE = "quote";
   */ 
@@ -10,14 +11,22 @@ function getItemID(){
 }
 
 // 取得設定檔案 目前有 logoUrl
-async function getConfig(){
-  const res = await fetch(`${API_BASE}/${config}`, {
+/*
+  需要一個 function 當參數，e.g.
+  const configCallback = function (result){
+   $("#logoUrl").val(result.logoUrl);
+  }
+*/
+async function getConfig(callback){
+  const res = await fetch(`${API_BASE}/config`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
     if (!res.ok) throw new Error("SERVER_ERROR");
-
-    return await res.json();
+    
+    const result = await res.json();
+    callback(result);
+   
 }
 
 // 讀取單筆資料
@@ -32,7 +41,6 @@ async function readData(id){
 
     const result = await res.json();
    
-     console.log("result",result.info);
     return result.info;
 
   } catch (err) {
