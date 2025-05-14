@@ -1,4 +1,5 @@
 // lib/common.ts
+// common.ts 僅保留「完全可重用的小工具」。
 import { Context } from "hono";
 import { getCookie } from "hono/cookie";
 import { verifyJwt } from "./jwt";
@@ -7,6 +8,22 @@ type Bindings = {
 	JOFFICE_AUTH_KV: KVNamespace;
 	JWT_SECRET: string;
 };
+
+/* ---------- 判斷是否登入 ---------- */
+export async function isAuthenticated(c: Context) {
+	const token = getCookie(c, "session");
+	if (!token) return false;
+
+	const payload = await verifyJwt(token, c.env.JWT_SECRET);
+	if (!payload) return false;
+
+	const exists = await c.env.JOFFICE_AUTH_KV.get(`sess:${payload.sessionId}`);
+	if (!exists) return false;
+
+	// 需要的話把使用者掛在 ctx
+	c.set("user", payload.username);
+	return true;
+}
 
 /* ---------- 驗證 URL ---------- */
 export function isValidUrl(str: unknown): str is string {
@@ -30,9 +47,7 @@ export async function parseJson<T = unknown>(c: Context): Promise<[null | T, nul
 }
 
 /* ---------- 取出已驗證使用者 ---------- */
-export async function requireAuth(
-	c: Context<{ Bindings: Bindings }>
-): Promise<null | { username: string; sessionId: string }> {
+export async function requireAuth(c: Context): Promise<null | { username: string; sessionId: string }> {
 	const token = getCookie(c, "session");
 	if (!token) return null;
 
@@ -43,15 +58,5 @@ export async function requireAuth(
 	const exists = await c.env.JOFFICE_AUTH_KV.get(`sess:${payload.sessionId}`);
 	if (!exists) return null;
 
-	return payload as { username: string; sessionId: string };
-}
-
-/* ---------- 讀／寫全域 Config ---------- */
-export async function loadConfig(c: Context<{ Bindings: Bindings }>) {
-	const raw = await c.env.JOFFICE_AUTH_KV.get("config");
-	return raw ? JSON.parse(raw) : { allowRegistration: true };
-}
-
-export async function saveConfig(c: Context<{ Bindings: Bindings }>, cfg: unknown) {
-	await c.env.JOFFICE_AUTH_KV.put("config", JSON.stringify(cfg));
+	return payload as unknown as { username: string; sessionId: string };
 }

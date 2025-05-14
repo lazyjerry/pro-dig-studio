@@ -46,20 +46,6 @@
 								指紋登入
 							</button>
 						</div>
-						<div class="flex items-center space-x-3 zoom-samll mr-2">
-							<input
-								id="loginPassword"
-								type="text"
-								placeholder="或輸入密碼"
-								class="bg-white flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-							/>
-							<button
-								id="loginPwdBtn"
-								class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-							>
-								密碼登入
-							</button>
-						</div>
 					</div>
 					<!-- 註冊 -->
 					<div id="registerSection" class="bg-gray-50 rounded-lg p-4 border border-gray-200 hidden">
@@ -107,12 +93,16 @@
 			if (!client.isAvailable()) {
 				showStatus("您的瀏覽器不支援 WebAuthn，請使用 Chrome 或 Firefox 瀏覽器", "error");
 			} else {
-				const config = await fetch("/api/config").then((r) => r.json());
+				const config = await fetch("/config").then((r) => r.json());
 				if (!config) {
 					showStatus("無法取得設定檔案，請稍後再試", "error");
 				} else if (config.allowRegistration) {
 					$("registerSection").classList.remove("hidden");
 					$("loginSection").classList.add("hidden");
+				}
+
+				if (config.isAuthenticated) {
+					location.href = "/";
 				}
 			}
 
@@ -147,6 +137,9 @@
 
 					if (!ok.ok) throw new Error("伺服器驗證失敗");
 					showStatus(`${username} 註冊成功！`, "success");
+
+					$("loginSection").classList.remove("hidden");
+					$("registerSection").classList.add("hidden");
 					$("loginUsername").value = username;
 				} catch (err) {
 					console.error(err);
