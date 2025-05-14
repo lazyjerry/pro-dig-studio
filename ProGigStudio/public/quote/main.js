@@ -299,17 +299,20 @@ async function restoreAllFields() {
   }
   if(jonsStr && '' != jonsStr){
     const data = JSON.parse(jonsStr);
-    console.log(data);
     if (data) {
       fillFormData(data);
     }
   }
 }
 
-$(document).ready(function () {
+// 取得 config 的 callback
+const configCallback = function (result){
+   $("#logoUrl").val(result.logoUrl);
+}
 
-  const config = getConfig();
-  $("#logoUrl").val(config.logoUrl);
+$(document).ready(function () { 
+  
+  getConfig(configCallback);
   // 預設日期
   setDefaultDates();
 
@@ -319,7 +322,11 @@ $(document).ready(function () {
   }
   const itemId = getItemID();
   const quoteNum =  $("#quoteNumber").val();
-  $("#quoteNumberLabel").text(`ID:${itemId}, 編號：${quoteNum}`);
+  if(itemId){
+    $("#quoteNumberLabel").text(`ID:${itemId}, 編號：${quoteNum}`);
+  }else{
+    $("#quoteNumberLabel").text(`編號：${quoteNum}`);
+  }
 
   // 一開始先新增一筆空的項目
   addRow();
