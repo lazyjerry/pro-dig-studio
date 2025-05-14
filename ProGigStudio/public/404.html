@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>404 - Page Not Found</title>
+		<!-- <script src="https://cdn.tailwindcss.com"></script> -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+		<style>
+			@keyframes float {
+				0%,
+				100% {
+					transform: translateY(0);
+				}
+				50% {
+					transform: translateY(-20px);
+				}
+			}
+			.floating {
+				animation: float 6s ease-in-out infinite;
+			}
+			.star {
+				position: absolute;
+				background-color: white;
+				border-radius: 50%;
+				animation: twinkle var(--duration) ease-in-out infinite;
+			}
+			@keyframes twinkle {
+				0%,
+				100% {
+					opacity: 0.2;
+				}
+				50% {
+					opacity: 1;
+				}
+			}
+		</style>
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+	<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center overflow-hidden relative">
+		<!-- Stars background -->
+		<div id="stars" class="absolute inset-0 overflow-hidden"></div>
+
+		<div class="z-10 text-center px-4">
+			<div class="floating mb-8">
+				<i class="fas fa-satellite text-6xl text-blue-400"></i>
+				<i class="fas fa-meteor text-4xl text-orange-400 ml-4"></i>
+				<i class="fas fa-rocket text-5xl text-purple-400 ml-4"></i>
+			</div>
+
+			<h1 class="text-6xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+				404
+			</h1>
+			<h2 class="text-2xl font-semibold mb-6">Houston, we have a problem!</h2>
+			<p class="text-gray-300 max-w-md mb-8">
+				The page you're looking for seems to have drifted off into the cosmic void. Maybe it's floating among the stars
+				or got sucked into a black hole.
+			</p>
+
+			<div class="flex flex-col sm:flex-row gap-4 justify-center">
+				<a
+					href="/"
+					class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-all transform hover:scale-105"
+				>
+					<i class="fas fa-home mr-2"></i>
+					Return to Earth
+				</a>
+				<a
+					href="#"
+					onclick="window.history.back()"
+					class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium transition-all transform hover:scale-105"
+				>
+					<i class="fas fa-arrow-left mr-2"></i>
+					Go Back
+				</a>
+			</div>
+		</div>
+
+		<div class="absolute bottom-4 text-gray-500 text-sm">
+			<p>
+				Lost in space? Contact our
+				<a href="#" class="text-blue-400 hover:underline">mission control</a>
+			</p>
+		</div>
+
+		<script>
+			// Create twinkling stars
+			document.addEventListener("DOMContentLoaded", function () {
+				const starsContainer = document.getElementById("stars");
+				const starCount = 100;
+
+				for (let i = 0; i < starCount; i++) {
+					const star = document.createElement("div");
+					star.classList.add("star");
+
+					// Random size between 1-3px
+					const size = Math.random() * 2 + 1;
+					star.style.width = `${size}px`;
+					star.style.height = `${size}px`;
+
+					// Random position
+					star.style.left = `${Math.random() * 100}%`;
+					star.style.top = `${Math.random() * 100}%`;
+
+					// Random animation duration
+					star.style.setProperty("--duration", `${Math.random() * 5 + 3}s`);
+
+					starsContainer.appendChild(star);
+				}
+
+				// Fun console message
+				console.log("%c🚀 404 - Page Not Found", "color: #4fd1c5; font-size: 16px; font-weight: bold;");
+				console.log("%cLooks like you found a wormhole to nowhere!", "color: #a0aec0;");
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>工作日誌系統</title>
+		<!-- 基本 Meta -->
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>工作日誌系統</title>
+
+		<!-- Favicon & Logo -->
+		<link rel="icon" href="/logo.png" />
+		<link rel="apple-touch-icon" href="/logo.png" sizes="180x180" />
+
+		<!-- <script src="https://cdn.tailwindcss.com"></script> -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+		<link rel="stylesheet" href="/work-logs/style.css" />
+		<link rel="stylesheet" href="/work-logs/tailwindcss.css" />
+	</head>
+	<body class="bg-gray-50 min-h-screen">
+		<div class="container mx-auto px-4 py-8 max-w-4xl">
+			<div class="text-center mb-8">
+				<h1 class="text-3xl font-bold text-blue-600 mb-2">工作日誌系統</h1>
+				<p class="text-gray-600">記錄您的工作進度與任務狀態</p>
+			</div>
+
+			<!-- 搜尋區塊 -->
+			<div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-100">
+				<h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
+					<i class="fas fa-search mr-2 text-blue-500"></i>
+					搜尋工作紀錄
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<div class="search-field relative">
+						<label class="block text-gray-700 mb-1 text-sm font-medium">工作名稱</label>
+						<input
+							id="search-title"
+							type="text"
+							placeholder="搜尋工作名稱..."
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						/>
+						<span class="clear-search absolute top2p8 right-3 hidden" data-target="search-title">
+							<i class="fas fa-times"></i>
+						</span>
+					</div>
+					<div class="search-field relative">
+						<label class="block text-gray-700 mb-1 text-sm font-medium">工作內容</label>
+						<input
+							id="search-content"
+							type="text"
+							placeholder="搜尋工作內容..."
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						/>
+						<span class="clear-search absolute top2p8 right-3 hidden" data-target="search-content">
+							<i class="fas fa-times"></i>
+						</span>
+					</div>
+					<div class="search-field relative">
+						<label class="block text-gray-700 mb-1 text-sm font-medium">紀錄日期(之前)</label>
+						<input
+							id="search-date"
+							type="text"
+							placeholder="選擇日期..."
+							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent datepicker"
+							readonly
+						/>
+						<span class="clear-search absolute top2p8 right-3 hidden" data-target="search-date">
+							<i class="fas fa-times"></i>
+						</span>
+					</div>
+				</div>
+				<div class="flex justify-end mt-4">
+					<button id="search-btn" class="px-6 py-2 btn-primary rounded-lg flex items-center">
+						<i class="fas fa-search mr-2"></i>
+						搜尋
+					</button>
+				</div>
+			</div>
+
+			<!-- 新增工作區塊 -->
+			<div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-100">
+				<h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
+					<i class="fas fa-plus-circle mr-2 text-green-500"></i>
+					新增工作紀錄
+				</h2>
+
+				<div class="mb-6">
+					<label class="block text-gray-700 mb-2 font-medium">
+						工作名稱
+						<span class="text-red-500">*</span>
+					</label>
+					<input
+						id="work-title"
+						type="text"
+						required
+						placeholder="請輸入工作名稱"
+						class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						value=""
+					/>
+				</div>
+
+				<div class="mb-4">
+					<label class="block text-gray-700 mb-2 font-medium">
+						工作內容
+						<span class="text-red-500">*</span>
+					</label>
+
+					<div id="work-items-container" class="space-y-4">
+						<!-- Work item template -->
+						<div class="border border-gray-200 rounded-lg p-4 relative work-item bg-gray-50">
+							<button class="absolute top-2 right-2 text-red-500 hover:text-red-700 remove-item">
+								<i class="fas fa-times-circle"></i>
+							</button>
+
+							<div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+								<div class="flex-grow">
+									<label class="block text-gray-700 mb-1">
+										項目名稱
+										<span class="text-red-500">*</span>
+									</label>
+									<input
+										type="text"
+										required
+										placeholder="請輸入項目名稱"
+										class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent item-name"
+									/>
+								</div>
+
+								<div class="w-full md:w-48">
+									<label class="block text-gray-700 mb-1">
+										狀態
+										<span class="text-red-500">*</span>
+									</label>
+									<select
+										class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent item-status"
+									>
+										<option value=""></option>
+										<option value="尚未開始">尚未開始</option>
+										<option value="進行中">進行中</option>
+										<option value="已完成">已完成</option>
+										<option value="審核中">審核中</option>
+										<option value="擱置">擱置</option>
+									</select>
+								</div>
+							</div>
+
+							<div>
+								<label class="block text-gray-700 mb-1">
+									執行內容
+									<span class="text-red-500">*</span>
+								</label>
+								<textarea
+									required
+									placeholder="請輸入執行內容"
+									rows="3"
+									class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent item-description"
+								></textarea>
+							</div>
+						</div>
+					</div>
+
+					<button
+						id="add-work-item"
+						class="mt-4 px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition flex items-center"
+					>
+						<i class="fas fa-plus mr-2"></i>
+						新增工作項目
+					</button>
+				</div>
+
+				<div class="flex justify-end space-x-3">
+					<button id="reset-form" class="px-4 py-2 btn-secondary rounded-lg">
+						<i class="fas fa-undo mr-2"></i>
+						重設
+					</button>
+					<button id="save-work-log" class="px-6 py-2 btn-success rounded-lg flex items-center">
+						<i class="fas fa-save mr-2"></i>
+						儲存
+					</button>
+				</div>
+			</div>
+
+			<!-- 工作列表 -->
+			<div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+				<div class="flex justify-between items-center mb-4">
+					<h2 class="text-xl font-semibold text-gray-700 flex items-center">
+						<i class="fas fa-list-alt mr-2 text-blue-500"></i>
+						工作紀錄列表
+					</h2>
+					<div class="flex space-x-2">
+						<button id="refresh-page" class="px-4 py-2 btn-primary rounded-lg flex items-center text-sm">
+							<i class="fas fa-undo mr-2"></i>
+							刷新頁面
+						</button>
+					</div>
+				</div>
+
+				<div id="work-logs-container" class="space-y-4"></div>
+			</div>
+
+			<!-- Modal for viewing full log details -->
+			<div id="log-modal" class="modal fixed inset-0 z-50 hidden">
+				<div class="modal-container absolute w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
+					<div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+						<div class="p-6">
+							<div class="flex justify-between items-start mb-4">
+								<h3 id="modal-title" class="text-2xl font-bold text-blue-600"></h3>
+								<button id="close-modal" class="text-gray-500 hover:text-gray-700">
+									<i class="fas fa-times"></i>
+								</button>
+							</div>
+
+							<div class="flex items-center mb-4">
+								<span id="modal-date" class="text-sm text-gray-500"></span>
+							</div>
+
+							<div id="modal-statuses" class="flex flex-wrap gap-2 mb-6"></div>
+
+							<div id="modal-items" class="space-y-4 mb-6"></div>
+
+							<div class="flex justify-end">
+								<button id="delete-log" class="px-4 py-2 btn-danger rounded-lg flex items-center">
+									<i class="fas fa-trash-alt mr-2"></i>
+									刪除紀錄
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Delete confirmation modal -->
+			<div id="delete-confirm-modal" class="modal fixed inset-0 z-50 hidden">
+				<div class="modal-container absolute w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
+					<div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+						<div class="p-6">
+							<h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+								<i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+								確認刪除
+							</h3>
+							<p class="mb-4">
+								請輸入工作名稱 "
+								<span id="delete-confirm-title" class="font-semibold"></span>
+								" 以確認刪除:
+							</p>
+							<input
+								type="text"
+								id="delete-confirm-input"
+								class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								placeholder="輸入工作名稱(不含前後空格)..."
+							/>
+							<div class="flex justify-end space-x-3">
+								<button id="cancel-delete" class="px-4 py-2 btn-secondary rounded-lg">取消</button>
+								<button id="confirm-delete" class="px-4 py-2 btn-import rounded-lg">確認刪除</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Import JSON modal -->
+			<div id="import-json-modal" class="modal fixed inset-0 z-50 hidden">
+				<div class="modal-container absolute w-full h-full bg-gray-900 bg-opacity-50 flex items-center justify-center">
+					<div class="bg-white rounded-xl shadow-xl w-full max-w-md">
+						<div class="p-6">
+							<div class="flex justify-between items-start mb-4">
+								<h3 class="text-xl font-bold text-gray-800 flex items-center">
+									<i class="fas fa-file-import text-purple-500 mr-2"></i>
+									匯入 JSON 資料
+								</h3>
+								<button id="close-import-modal" class="text-gray-500 hover:text-gray-700">
+									<i class="fas fa-times"></i>
+								</button>
+							</div>
+
+							<div class="mb-4">
+								<label class="block text-gray-700 mb-2">選擇 JSON 檔案</label>
+								<input
+									type="file"
+									id="json-file-input"
+									accept=".json"
+									class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus;border-transparent"
+								/>
+								<p class="text-sm text-gray-500">或直接貼上 JSON 內容:</p>
+								<textarea
+									id="json-text-input"
+									rows="6"
+									class="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus;border-transparent font-mono text-sm"
+									placeholder='[{"id":1,"title":"範例工作","date":"2023-11-15 09:37","items":[{"name":"項目1","description":"描述","status":"進行中"}]}]'
+								></textarea>
+							</div>
+
+							<div class="flex justify-end space-x-3">
+								<button id="cancel-import" class="px-4 py-2 btn-secondary rounded-lg">取消</button>
+								<button id="confirm-import" class="px-4 py-2 btn-import rounded-lg flex items-center">
+									<i class="fas fa-file-import mr-2"></i>
+									匯入資料
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+			<script src="https://npmcdn.com/flatpickr/dist/l10n/zh-tw.js"></script>
+
+			<script>
+				let workLogs = [];
+				let offset = 0; // 已經載了多少筆
+				const limit = 3; // 每次載入筆數
+				let isLoading = false; // 載入中狀態
+				let hasMore = true; // 是否還有更多
+				// 搜尋狀態
+				let currentSearch = {
+					title: "",
+					content: "",
+					date: "",
+				};
+			</script>
+			<script src="/work-logs/func.js"></script>
+			<script src="/work-logs/script.js"></script>
+		</div>
+	</body>
+</html>

@@ -6,7 +6,14 @@
 	"kv_namespaces": [
 		{
 			"binding": "JOFFICE_AUTH_KV",
-			"id": "338fa2d736674446a55cd699b98b77e9"
+			"id": "7acfa46bd6c948879d4edda828816ad2"
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "WORKLOG_DB",
+			"database_id": "02ca9f6a-41ef-4eee-87a4-bb42ccb789de",
+			"database_name": "worklogs"
 		}
 	],
 	"assets": {

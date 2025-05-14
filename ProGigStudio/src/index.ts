@@ -1,13 +1,19 @@
 // src/index.ts
-import { Hono } from "hono";
+import { Hono, Context, Next } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { server as webauthn } from "@passwordless-id/webauthn";
-import { createJwt, verifyJwt } from "./lib/jwt";
+import { createJwt, verifyJwt } from "./libs/jwt";
 import { nanoid } from "nanoid";
+import { loadConfig, saveConfig, validateConfig, setAllowRegistration, getAllowRegistration } from "./libs/config";
+import { parseJson, requireAuth, isAuthenticated } from "./libs/common";
+import worklogRouter from "./routes/worklogs";
+import authRequired from "./routes/authRequired"; // 引入驗證中介軟體
+import dataRouter from "./routes/data";
 
 const { randomChallenge, verifyRegistration, verifyAuthentication } = webauthn;
 
 type Bindings = {
+	WORKLOG_DB: D1Database;
 	JOFFICE_AUTH_KV: KVNamespace;
 	JWT_SECRET: string;
 };
@@ -15,8 +21,13 @@ type Bindings = {
 const app = new Hono<{ Bindings: Bindings }>();
 const RP_NAME = "ProGigStudio";
 
+/* ---------- 註冊行為 ---------- */
+
 /* ---------- 註冊：Options ---------- */
 app.post("/webauthn/register/options", async (c) => {
+	const allowRegistration = await getAllowRegistration(c);
+	if (!allowRegistration) return c.json({ ok: false }, 400);
+
 	const { username } = await c.req.json<{ username: string }>();
 	const RP_ID = new URL(c.req.url).hostname;
 
@@ -44,6 +55,9 @@ app.post("/webauthn/register/options", async (c) => {
 
 /* ---------- 註冊：Verify ---------- */
 app.post("/webauthn/register/verify", async (c) => {
+	const allowRegistration = await getAllowRegistration(c);
+	if (!allowRegistration) return c.json({ ok: false }, 400);
+
 	const { username, credential } = await c.req.json<{ username: string; credential: unknown }>();
 
 	const challenge = await c.env.JOFFICE_AUTH_KV.get(`reg:${username}`);
@@ -68,8 +82,11 @@ app.post("/webauthn/register/verify", async (c) => {
 		})
 	);
 
+	await setAllowRegistration(c, false); // 註冊後關閉註冊功能
 	return c.json({ ok: registrationParsed !== null });
 });
+
+/* ---------- 登入行為 ---------- */
 
 /* ---------- 登入：Options ---------- */
 app.post("/webauthn/login/options", async (c) => {
@@ -102,7 +119,7 @@ app.post("/webauthn/login/verify", async (c) => {
 
 	const stored = JSON.parse(storedRaw);
 
-	// ➊ 準備 authenticator 物件（第二參數）
+	// 準備 authenticator 物件（第二參數）
 	const authenticator = {
 		id: stored.credentialID, // ★ 必須叫 id
 		publicKey: stored.credentialPublicKey, // ★ 函式內部用 publicKey
@@ -110,7 +127,7 @@ app.post("/webauthn/login/verify", async (c) => {
 		algorithm: stored.algorithm, // 非必需，但有就傳
 	};
 
-	// ➋ options（第三參數）
+	// options（第三參數）
 	const options = {
 		challenge,
 		origin: new URL(c.req.url).origin,
@@ -138,6 +155,7 @@ app.post("/webauthn/login/verify", async (c) => {
 	return c.json({ ok: false });
 });
 
+/* ---------- 登出 ---------- */
 app.get("/logout", async (c) => {
 	const token = getCookie(c, "session");
 	if (token) {
@@ -151,155 +169,72 @@ app.get("/logout", async (c) => {
 	return c.redirect("/auth.html");
 });
 
-// /* ---- 用戶狀態 ---- */
-// /** 讀取 */
-// app.get("/api/state", async (c) => {
-// 	const user = c.get("user") as string; // middleware 早就 set 好
-
-// 	const raw = await c.env.JOFFICE_AUTH_KV.get(`state:${user}`);
-// 	if (!raw) return c.json({ ok: true, state: null }); // 首次登入
-
-// 	return c.json({ ok: true, state: JSON.parse(raw) });
-// });
-
-// /** 保存 */
-// app.put("/api/state", async (c) => {
-// 	const user = c.get("user") as string;
-// 	const state = await c.req.json(); // 不需驗證欄位，全部原樣存
-// 	await c.env.JOFFICE_AUTH_KV.put(`state:${user}`, JSON.stringify(state));
-// 	return c.json({ ok: true });
-// });
-
 /* ---------- 全域組態：讀取 ---------- */
-app.get("/api/config", async (c) => {
-	/**
-	 * 建議固定用單一 key 儲存，例如 "config"
-	 * 也可以改成 "config:global" 之類的名稱
-	 */
-	const raw = await c.env.JOFFICE_AUTH_KV.get("config");
 
-	// 若 KV 尚未設定，給一份預設值（可自行調整）
-	if (!raw) {
-		const defaultConfig = { allowRegistration: true };
-		return c.json(defaultConfig);
-	}
+// 取得不用登入的組態
+app.get("/config", async (c) => {
+	// 身分驗證
+	const auth = await isAuthenticated(c);
 
-	// 正常讀取
-	try {
-		return c.json(JSON.parse(raw));
-	} catch {
-		// 格式壞掉時回傳 500，前端可透過狀態判斷
-		return c.json({ ok: false, error: "CONFIG_PARSE_ERROR" }, 500);
-	}
+	let cfg = await loadConfig(c);
+
+	cfg = { allowRegistration: cfg.allowRegistration, isAuthenticated: auth }; // 只回傳 allowRegistration
+	let obj = c.json(cfg);
+	return obj;
 });
 
-function isValidUrl(str: unknown): str is string {
-	try {
-		if (typeof str !== "string") return false;
-		// new URL 會丟錯誤代表不是合法 URL
-		new URL(str);
-		return true;
-	} catch {
-		return false;
-	}
-}
+// 取得需要登入的組態
+app.get("/api/config", async (c) => {
+	// 身分驗證
+	const auth = await requireAuth(c);
+	if (!auth) return c.json({ ok: false, error: "UNAUTHENTICATED" }, 401);
+
+	let cfg = await loadConfig(c);
+
+	cfg.username = auth.username; // 取得使用者名稱
+	const currentUrl = new URL(c.req.url);
+	cfg.logoUrl = `${currentUrl.origin}/logo.png`;
+
+	let obj = c.json(cfg);
+
+	return obj;
+});
 
 app.put("/api/config", async (c) => {
-	// 1) 基本身分驗證
-	const user = c.get("user") as string | undefined;
-	if (!user) return c.json({ ok: false, error: "UNAUTHENTICATED" }, 401);
+	// 身分驗證
+	const auth = await requireAuth(c);
+	if (!auth) return c.json({ ok: false, error: "UNAUTHENTICATED" }, 401);
 
-	// 2) 解析 JSON
-	let payload: any;
-	try {
-		payload = await c.req.json();
-	} catch {
-		return c.json({ ok: false, error: "INVALID_JSON" }, 400);
-	}
+	// 解析 JSON
+	const [payload, jsonErr] = await parseJson<any>(c);
+	if (jsonErr) return c.json({ ok: false, error: jsonErr }, 400);
 
-	// 3) === 手動驗證開始 ==================================
+	// 手動驗證（抽成工具亦可）
+	const err = validateConfig(payload);
+	if (err) return c.json({ ok: false, error: err }, 400);
 
-	// (a) allowRegistration：可省略或必為 boolean
-	if ("allowRegistration" in payload && typeof payload.allowRegistration !== "boolean") {
-		return c.json({ ok: false, error: "allowRegistration must be boolean" }, 400);
-	}
-
-	// (b) 固定 5 個頁面
-	const pages = ["quote", "meeting", "worklog", "invoice", "notes"] as const;
-	for (const key of pages) {
-		if (!(key in payload)) return c.json({ ok: false, error: `missing ${key}` }, 400);
-
-		const page = payload[key];
-		if (typeof page !== "object" || page === null) return c.json({ ok: false, error: `${key} must be object` }, 400);
-		if (!isValidUrl(page.url)) return c.json({ ok: false, error: `${key}.url invalid` }, 400);
-		if ("token" in page && typeof page.token !== "string")
-			return c.json({ ok: false, error: `${key}.token invalid` }, 400);
-	}
-
-	// (c) extra：可有多筆
-	if ("extra" in payload) {
-		if (!Array.isArray(payload.extra)) return c.json({ ok: false, error: "extra must be an array" }, 400);
-
-		for (const [i, item] of payload.extra.entries()) {
-			if (typeof item !== "object" || item === null)
-				return c.json({ ok: false, error: `extra[${i}] must be object` }, 400);
-			if (!isValidUrl(item.url)) return c.json({ ok: false, error: `extra[${i}].url invalid` }, 400);
-			if ("token" in item && typeof item.token !== "string")
-				return c.json({ ok: false, error: `extra[${i}].token invalid` }, 400);
-			if ("label" in item && typeof item.label !== "string")
-				return c.json({ ok: false, error: `extra[${i}].label invalid` }, 400);
-		}
-	}
-
-	// (d) db
-	if ("db" in payload) {
-		if (typeof payload.db !== "object" || !isValidUrl(payload.db.url) || typeof payload.db.password !== "string") {
-			return c.json({ ok: false, error: "db invalid" }, 400);
-		}
-	}
-
-	// (e) login：只收 password
-	if ("login" in payload) {
-		if (typeof payload.login !== "object" || typeof payload.login.password !== "string") {
-			return c.json({ ok: false, error: "login.password invalid" }, 400);
-		}
-		// 強制刪掉多餘欄位（如 username）
-		delete payload.login.username;
-	}
-
-	// (f) openai
-	if ("openai" in payload) {
-		if (typeof payload.openai !== "object" || typeof payload.openai.token !== "string") {
-			return c.json({ ok: false, error: "openai.token invalid" }, 400);
-		}
-	}
-
-	// 4) === 驗證通過，寫入 KV ==============================
-	await c.env.JOFFICE_AUTH_KV.put("config", JSON.stringify(payload));
-
+	// 儲存
+	await saveConfig(c, payload);
 	return c.json({ ok: true });
 });
 
-/* ---------- 保護 ProGigStudio ---------- */
-app.use("/*", async (c, next) => {
-	const token = getCookie(c, "session");
-	if (!token) return c.redirect("/auth.html");
+/* ---------- 驗證登入 ---------- */
+/* --- 保護多個路徑 --- */
+[
+	"/", // 根目錄
+	"/dashboard", // dashboard 及子路由
+	"/api/*", // 所有 API
+	"/logs/*", // worklogs
+].forEach((p) => app.use(p, authRequired));
 
-	const payload = await verifyJwt(token, c.env.JWT_SECRET);
-	if (!payload) return c.redirect("/auth.html");
+app.get("/", (c) => c.redirect("/dashboard"));
 
-	// ★ 再去 KV 查 sessionId 是否存在
-	const exists = await c.env.JOFFICE_AUTH_KV.get(`sess:${payload.sessionId}`);
-	if (!exists) return c.redirect("/auth.html");
+// 404
+// app.notFound((c) => c.redirect("/404.html"));
 
-	// 如果你想把使用者資訊掛在 ctx 上給之後的 handler 用：
-	c.set("user", payload.username);
+/* ---- 路由掛載位置，放在 authRequired 之後即可 ---- */
+app.route("/logs", worklogRouter); // 自動支援 /logs 與 /logs/*
 
-	await next();
-});
-
-app.get("/", (c) => {
-	return c.redirect("/dasboard.html");
-});
+app.route("/api/data", dataRouter);
 
 export default app;
