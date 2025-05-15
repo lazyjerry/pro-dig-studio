@@ -13,7 +13,9 @@
 import { Hono } from "hono";
 import { requireAuth } from "../libs/common";
 
-import handleQuote from "../templates/quote.ts"; // 引入報價單範本
+import handleQuote from "../templates/quote"; // 引入報價單範本
+import handleMeeting from "../templates/meeting"; // 引入會議記錄
+import handleLabor from "../templates/labor"; // 引入勞報單
 
 type Bindings = {
 	WORKLOG_DB: D1Database;
@@ -22,7 +24,7 @@ type Bindings = {
 const router = new Hono<{ Bindings: Bindings }>();
 
 /* ---------- 允許的類型 ---------- */
-const ALLOW_TYPES = ["worklog", "invoice", "quote", "default"] as const;
+const ALLOW_TYPES = ["labor", "quote", "meeting"] as const;
 const validType = (t?: string): t is string => !!t && ALLOW_TYPES.includes(t as any);
 
 /* ---------- 全域登入驗證 ---------- */
@@ -31,21 +33,18 @@ router.use(async (c, next) => {
 	await next();
 });
 
-/* ---------- 6. 產生列印用 PDF 頁 ---------- */
+/* ---------- 產生列印用 PDF 頁 ---------- */
 router.post("/pdf", async (c) => {
-	// const id = c.req.query("id");
-	// if (!id) return c.text("Missing id", 400);
-
-	// const type = c.req.query("type")?.trim();
-	// if (!validType(type)) return c.json({ ok: false, error: "INVALID_TYPE" }, 400);
-
-	// // 檢查資料是否存在
-	// const row = await c.env.WORKLOG_DB.prepare("SELECT id FROM data WHERE id = ?").bind(id).first();
-	// if (!row) return c.text("Not found", 404);
-
-	const html = await handleQuote(c);
-
-	console.log("html", html);
+	const type = c.req.query("type");
+	if (!validType(type)) return c.json({ ok: false, error: `INVALID_TYPE. ${type}` }, 400);
+	let html = "";
+	if ("quote" == type) {
+		html = await handleQuote(c);
+	} else if ("meeting" == type) {
+		html = await handleMeeting(c);
+	} else if ("labor" == type) {
+		html = await handleLabor(c);
+	}
 
 	return new Response(html, {
 		headers: { "Content-Type": "text/html; charset=utf-8" },
@@ -108,7 +107,7 @@ router.get("/", async (c) => {
 router.post("/", async (c) => {
 	const { type, name, info } = await c.req.json<{ type?: string; name?: string; info?: string }>();
 
-	if (!validType(type)) return c.json({ ok: false, error: "INVALID_TYPE" }, 400);
+	if (!validType(type)) return c.json({ ok: false, error: `INVALID_TYPE. ${type}`  }, 400);
 	if (!name?.trim()) return c.json({ ok: false, error: "NAME_REQUIRED" }, 400);
 
 	const { lastInsertRowID } = await c.env.WORKLOG_DB.prepare(
@@ -142,7 +141,7 @@ router.put("/:id{[0-9]+}", async (c) => {
 	const id = c.req.param("id");
 	const { type, name, info } = await c.req.json<{ type?: string; name?: string; info?: string }>();
 
-	if (type && !validType(type)) return c.json({ ok: false, error: "INVALID_TYPE" }, 400);
+	if (type && !validType(type)) return c.json({ ok: false, error: `INVALID_TYPE. ${type}` }, 400);
 	if (!name?.trim()) return c.json({ ok: false, error: "NAME_REQUIRED" }, 400);
 
 	await c.env.WORKLOG_DB.prepare(

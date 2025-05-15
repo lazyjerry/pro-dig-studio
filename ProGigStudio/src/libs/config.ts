@@ -36,7 +36,7 @@ export function validateConfig(payload: any): string | null {
 	}
 
 	/* ---------- (b) 固定 5 頁面，可省略 ---------- */
-	const pages = ["quote", "meeting", "worklog", "invoice", "notes"] as const;
+	const pages = ["notes"] as const;
 
 	for (const key of pages) {
 		if (!(key in payload)) continue; // 缺少就跳過

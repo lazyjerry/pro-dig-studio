@@ -12,8 +12,6 @@ async function init() {
   }
   console.log("config", cfg);
   /* 把設定塞進表單欄位 */
-  fillPage("meeting", cfg.meeting);
-  fillPage("invoice", cfg.invoice);
   fillPage("notes",   cfg.notes);
   setVal("openai-token",    cfg.openai?.token);
 
@@ -182,8 +180,7 @@ async function saveConfigSilent() {
 function buildConfigFromForm() {
   /* ---------- 組 config 物件 ---------- */
     const cfg = {
-      meeting: { url: $("meeting-url").value, token: $("meeting-token").value },
-      invoice: { url: $("invoice-url").value, token: $("invoice-token").value },
+      
       notes: { url: $("notes-url").value, token: $("notes-token").value },
       openai: { token: $("openai-token").value },
 

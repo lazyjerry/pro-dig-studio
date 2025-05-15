@@ -78,6 +78,8 @@ function updateTotals() {
 
    const jsonStr = getJsonByForm();
   document.getElementById("dataField").value = jsonStr;
+
+  _saveData();
 }
 
 // 事件：若輸入框 blur 時發現為空，就改成 "0"
@@ -167,6 +169,15 @@ function autofillForm() {
   updateTotals();
 }
 
+function _saveData(){
+  // 保存
+  const jsonStr = getJsonByForm();
+  const name = $("#quoteNumber").val();
+  saveData("編號-" + name, jsonStr,function(){
+    // 有保存就不存本地
+    removeAllFields();  
+  });
+}
 
 // 匯出 JSON => 產生檔案
 function exportFormJSON() {
@@ -184,6 +195,8 @@ function exportFormJSON() {
     type: "application/json;charset=utf-8",
   });
   saveAs(blob, `quoteData_${dateTimeStr}.json`);
+
+  _saveData();
 }
 
 // 匯入 JSON
@@ -278,6 +291,8 @@ function fillFormData(data) {
     });
   }
   updateTotals();
+
+
 }
 
 
@@ -323,9 +338,9 @@ $(document).ready(function () {
   const itemId = getItemID();
   const quoteNum =  $("#quoteNumber").val();
   if(itemId){
-    $("#quoteNumberLabel").text(`ID:${itemId}, 編號：${quoteNum}`);
+    $("#quoteNumberLabel").text(`請快樂的編輯報價。ID：${itemId}, 編號：${quoteNum}`);
   }else{
-    $("#quoteNumberLabel").text(`編號：${quoteNum}`);
+    $("#quoteNumberLabel").text(`恭喜有一份新報價！編號：${quoteNum}`);
   }
 
   // 一開始先新增一筆空的項目
@@ -418,14 +433,6 @@ $(document).ready(function () {
       console.log("SAVE");
       const jsonStr = getJsonByForm();
       localStorage.setItem(LS_PREFIX, jsonStr);
-
-      // 保存
-      const name = $("#quoteNumber").val();
-      const saved = saveData("編號-" + name, jsonStr);
-      if(saved){
-        // 有保存就不存本地
-        removeAllFields();
-      }
     }
   );
 });
