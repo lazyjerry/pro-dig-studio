@@ -1,0 +1,59 @@
+/* Tag 樣式 */
+.tag {
+	display: inline-block;
+	background-color: #e2e6ea;
+	padding: 0.25rem 0.5rem;
+	border-radius: 0.25rem;
+	margin: 0.125rem;
+}
+.tag button {
+	border: none;
+	background: transparent;
+	margin-left: 0.5rem;
+	cursor: pointer;
+}
+
+/* 右下浮動送出保存按鈕 (主) */
+.fab {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	background-color: #dc3545;
+	color: white;
+	border: none;
+	font-size: 18px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+/* 小型圓形浮動按鈕（匯出/匯入 JSON） */
+.fab-sub {
+	position: fixed;
+	right: 30px;
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background-color: #6c757d; /* 灰色 */
+	color: white;
+	border: none;
+	font-size: 12px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 999;
+	cursor: pointer;
+}
+/* 分別設定不同的 bottom 值，使其堆疊在主按鈕上方 */
+#exportJsonBtn {
+	bottom: 200px; /* 調整以和主按鈕錯開 */
+}
+#importJsonBtn {
+	bottom: 130px; /* 調整以和匯出按鈕錯開 */
+}

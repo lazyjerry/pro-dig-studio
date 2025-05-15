@@ -8,7 +8,7 @@
 		<link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
 		<link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
 
-		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- <script src="https://cdn.tailwindcss.com"></script> -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 		<style>
 			.menu-item.active {
@@ -35,6 +35,7 @@
 				}
 			}
 		</style>
+		<link rel="stylesheet" href="/css/dashboard.css" />
 	</head>
 	<body class="bg-gray-100 h-screen flex overflow-hidden">
 		<!-- Sidebar Menu -->
@@ -48,7 +49,7 @@
 					<li>
 						<a
 							id="quote-page-self"
-							href="#"
+							href="/quote/"
 							data-url="/quote/"
 							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
 						>
@@ -58,9 +59,9 @@
 					</li>
 					<li>
 						<a
-							id="meeting-page"
-							href="#"
-							data-url="https://goblinapp.com/"
+							id="meeting-page-self"
+							href="/meeting/"
+							data-url="/meeting/"
 							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
 						>
 							<i class="fas fa-clipboard-list mr-3"></i>
@@ -70,7 +71,7 @@
 					<li>
 						<a
 							id="worklog-page-self"
-							href="#"
+							href="/work-logs/"
 							data-url="/work-logs/"
 							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
 						>
@@ -80,9 +81,9 @@
 					</li>
 					<li>
 						<a
-							id="invoice-page"
-							href="#"
-							data-url="https://goblinapp.com/"
+							id="labor-page-self"
+							href="/labor/"
+							data-url="/labor/"
 							class="menu-item flex items-center p-3 text-gray-700 hover:text-gray-900"
 						>
 							<i class="fas fa-file-alt mr-3"></i>
@@ -155,78 +156,6 @@
 						<h3 class="text-lg font-medium text-gray-900 mb-4">頁面設定</h3>
 
 						<div class="space-y-6">
-							<div>
-								<label class="block text-sm font-medium text-gray-700 mb-1">會議記錄</label>
-								<div class="url-token-group">
-									<div>
-										<label for="meeting-url" class="block text-xs font-medium text-gray-500 mb-1">URL</label>
-										<input
-											type="url"
-											id="meeting-url"
-											name="meeting-url"
-											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-										/>
-									</div>
-									<div>
-										<label for="meeting-token" class="block text-xs font-medium text-gray-500 mb-1">TOKEN</label>
-										<input
-											type="password"
-											id="meeting-token"
-											name="meeting-token"
-											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-										/>
-									</div>
-								</div>
-							</div>
-
-							<!-- <div>
-								<label class="block text-sm font-medium text-gray-700 mb-1">工作日誌</label>
-								<div class="url-token-group">
-									<div>
-										<label for="worklog-url" class="block text-xs font-medium text-gray-500 mb-1">URL</label>
-										<input
-											type="url"
-											id="worklog-url"
-											name="worklog-url"
-											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-										/>
-									</div>
-									<div>
-										<label for="worklog-token" class="block text-xs font-medium text-gray-500 mb-1">TOKEN</label>
-										<input
-											type="password"
-											id="worklog-token"
-											name="worklog-token"
-											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-										/>
-									</div>
-								</div>
-							</div> -->
-
-							<div>
-								<label class="block text-sm font-medium text-gray-700 mb-1">勞報單</label>
-								<div class="url-token-group">
-									<div>
-										<label for="invoice-url" class="block text-xs font-medium text-gray-500 mb-1">URL</label>
-										<input
-											type="url"
-											id="invoice-url"
-											name="invoice-url"
-											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-										/>
-									</div>
-									<div>
-										<label for="invoice-token" class="block text-xs font-medium text-gray-500 mb-1">TOKEN</label>
-										<input
-											type="password"
-											id="invoice-token"
-											name="invoice-token"
-											class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-										/>
-									</div>
-								</div>
-							</div>
-
 							<div>
 								<label class="block text-sm font-medium text-gray-700 mb-1">筆記本本</label>
 								<div class="url-token-group">
@@ -387,13 +316,6 @@
 						document.getElementById("openai-token").value = settings.openai.token || "";
 					}
 				}
-
-				// Load settings when page loads
-				// loadSettings();
-
-				// Load any saved extra pages from localStorage (in a real app)
-				// For demo, we'll add one example
-				// addExtraPage("範例頁面", "https://goblinapp.com/", "example-token-123");
 			});
 		</script>
 	</body>

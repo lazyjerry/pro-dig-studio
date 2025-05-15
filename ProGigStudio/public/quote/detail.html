@@ -2,8 +2,11 @@
 <html lang="zh-TW">
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="robots" content="noindex, nofollow" />
 		<title>報價單產生器</title>
-		<!-- <script src="https://cdn.tailwindcss.com"></script> -->
+		<!-- Favicon & Logo -->
+		<link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
 		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
 
 		<link href="./tailwindcss.css" rel="stylesheet" />
@@ -21,7 +24,7 @@
 				id="quoteForm"
 				method="POST"
 				target="_blank"
-				action="/api/data/pdf"
+				action="/api/data/pdf?type=quote"
 				class="bg-white rounded-xl shadow-soft p-6 hover-scale form-footer"
 			>
 				<input type="hidden" name="data" id="dataField" />
