@@ -180,10 +180,7 @@ async function saveConfigSilent() {
 function buildConfigFromForm() {
   /* ---------- 組 config 物件 ---------- */
     const cfg = {
-      
-      notes: { url: $("notes-url").value, token: $("notes-token").value },
       openai: { token: $("openai-token").value },
-
       // 收集所有 extra
       extra: getExtrasFromDOM(),
     };
