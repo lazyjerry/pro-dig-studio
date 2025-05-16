@@ -9,11 +9,15 @@ type Bindings = {
 
 export async function loadConfig(c: Context) {
 	const raw = await c.env.JOFFICE_AUTH_KV.get("config");
-	return raw ? JSON.parse(raw) : { allowRegistration: true };
+	console.log("loadConfig", raw);
+	return raw
+		? JSON.parse(raw)
+		: { allowRegistration: true, extra: [{ label: "TEST", url: "https://goblinapp.com/", token: "123" }] };
 }
 
 export async function saveConfig(c: Context, cfg: unknown) {
 	// 儲存 config
+	console.log("saveConfig", cfg);
 	await c.env.JOFFICE_AUTH_KV.put("config", JSON.stringify(cfg));
 }
 
