@@ -107,15 +107,18 @@ router.get("/", async (c) => {
 router.post("/", async (c) => {
 	const { type, name, info } = await c.req.json<{ type?: string; name?: string; info?: string }>();
 
-	if (!validType(type)) return c.json({ ok: false, error: `INVALID_TYPE. ${type}`  }, 400);
+	if (!validType(type)) return c.json({ ok: false, error: `INVALID_TYPE. ${type}` }, 400);
 	if (!name?.trim()) return c.json({ ok: false, error: "NAME_REQUIRED" }, 400);
 
-	const { lastInsertRowID } = await c.env.WORKLOG_DB.prepare(
+	const result = await c.env.WORKLOG_DB.prepare(
 		`INSERT INTO data (type, name, info, created_at, updated_at)
               VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
 	)
 		.bind(type, name.trim(), info || "")
 		.run();
+
+	const lastInsertRowID = result.meta.last_row_id; // ← 正確的位置
+	console.log("SAVE", lastInsertRowID);
 
 	return c.json({ ok: true, id: lastInsertRowID });
 });

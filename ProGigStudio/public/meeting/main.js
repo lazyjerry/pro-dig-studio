@@ -110,10 +110,12 @@ function saveFormData(remote = false) {
 	const jsonStr = JSON.stringify(data);
 	// 需要同步到遠端伺服器時（remote = true）
 	if (remote) {
-		  saveData(data.mainTitle, jsonStr,function(){
-      // 遠端保存後移除
-      localStorage.removeItem(LS_PREFIX);
-    });
+		  saveData(data.mainTitle, jsonStr,function(success){
+        // 遠端保存後移除
+        if(success){
+          localStorage.removeItem(LS_PREFIX);
+        }
+      });
 	}else{
     localStorage.setItem(LS_PREFIX, jsonStr);
   }

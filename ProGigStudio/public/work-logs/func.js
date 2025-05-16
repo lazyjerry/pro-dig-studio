@@ -20,6 +20,12 @@ async function loadLogs(append = false,delayTime = 0) {
   }
 
   try {
+
+    let searchDate = '';
+    if(currentSearch.date){
+      const localStart = new Date(currentSearch.date);
+      searchDate = toUTCStringNoTZ(localStart);
+    }
     // 組 URL search params
     const params = new URLSearchParams({
       limit: limit,
@@ -27,7 +33,7 @@ async function loadLogs(append = false,delayTime = 0) {
       // 只有非空才加入
       ...(currentSearch.title && { searchTitle: currentSearch.title }),
       ...(currentSearch.content && { searchContent: currentSearch.content }),
-      ...(currentSearch.date && { searchDate: currentSearch.date })
+      ...(currentSearch.date && { searchDate: searchDate })
     });
 
     const res = await fetch(`/logs?${params.toString()}`);
@@ -87,48 +93,6 @@ function resetForm() {
   document.getElementById("work-title").value = "";
 
   initWorkTitle();
-}
-
-
-// 取得本地時間格式
-function getLocalTime(input) {
-  
-  let date;
-  
-  if (input instanceof Date) {
-    date = input;
-  } else if (typeof input === 'number') {
-    // 时间戳
-    date = new Date(input);
-  } else if (typeof input === 'string') {
-    // 检查是否包含时区标记：末尾有 Z 或 +HH:MM / -HH:MM
-    const hasOffset = /(?:Z|[+\-]\d{2}:\d{2})$/.test(input);
-    if (hasOffset) {
-      // 直接让 Date 处理 ISO 字串
-      date = new Date(input);
-    } else {
-      // 当作 UTC 解析，再转成本地
-      const [datePart, timePart = '00:00:00'] = input.split(/[\sT]/);
-      const [Y, M, D] = datePart.split('-').map(Number);
-      const [h = 0, m = 0, s = 0] = timePart.split(':').map(Number);
-
-      // 用 Date.UTC 当作 UTC 时间戳，再由 new Date 转成本地
-      const timestamp = Date.UTC(Y, M - 1, D, h, m, s);
-      date = new Date(timestamp);
-    }
-  } else {
-    // 兜底：尝试 new Date
-    date = new Date(input);
-  }
-
-  const pad = (n) => String(n).padStart(2, '0');
-  return (
-    date.getFullYear() + '-' +
-    pad(date.getMonth() + 1) + '-' +
-    pad(date.getDate()) + ' ' +
-    pad(date.getHours()) + ':' +
-    pad(date.getMinutes())
-  );
 }
 
 function initWorkTitle(){
