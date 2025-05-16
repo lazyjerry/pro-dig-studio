@@ -173,9 +173,11 @@ function _saveData(){
   // 保存
   const jsonStr = getJsonByForm();
   const name = $("#quoteNumber").val();
-  saveData("編號-" + name, jsonStr,function(){
-    // 有保存就不存本地
-    removeAllFields();  
+  saveData("編號-" + name, jsonStr,function(success){
+    if(success){
+      // 有保存就不存本地
+      removeAllFields();  
+    }  
   });
 }
 

@@ -9,12 +9,13 @@
 		<link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
 		<link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
 
-		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- <script src="https://cdn.tailwindcss.com"></script> -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 		<link href="/css/table.css" rel="stylesheet" />
 		<link href="/css/list.css" rel="stylesheet" />
+
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 	</head>
 	<body class="bg-gray-50">
 		<div class="container mx-auto px-4 py-8">
@@ -44,17 +45,17 @@
 					<div>
 						<label class="block text-sm font-medium text-gray-700 mb-1">開始日期</label>
 						<input
-							type="datetime-local"
+							type="text"
 							id="start-date"
-							class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							class="datepicker w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 						/>
 					</div>
 					<div>
 						<label class="block text-sm font-medium text-gray-700 mb-1">結束日期</label>
 						<input
-							type="datetime-local"
+							type="text"
 							id="end-date"
-							class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							class="datepicker w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 						/>
 					</div>
 				</div>
@@ -113,10 +114,14 @@
 			<div id="pagination-info" class="mt-4 text-sm text-gray-600"></div>
 		</div>
 
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+		<script src="https://npmcdn.com/flatpickr/dist/l10n/zh-tw.js"></script>
 		<script>
 			const API_BASE = "/api/data";
 			const DATA_TYPE = "quote";
 		</script>
+		<script src="/js/common.js"></script>
 		<script src="/js/list.js"></script>
 	</body>
 </html>

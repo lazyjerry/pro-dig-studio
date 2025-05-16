@@ -42,8 +42,8 @@ function updateCalculations() {
 	$("#netPay").text(addComma(Math.round(net)));
 
 	// 金額重新計算的時候也儲存
-	const baseData = getAllValue();
-	_saveData(baseData);
+	// const baseData = getAllValue();
+	// _saveData(baseData);
 }
 
 // ====== UI 切換 ======
@@ -225,9 +225,9 @@ async function restoreFormData(formSel = "#payoutForm") {
 	if (!$form.length) return;
 
 	const id = getItemID()
-  let jonsStr = '';
   if(id && id > 0){
-    jonsStr = await readData(id);
+    const jsonStr = await readData(id);
+		// console.log("restoreFormData jonsStr",jsonStr);
 		fillFormByJSON(jsonStr, formSel)
 
   }else{
@@ -246,6 +246,12 @@ async function restoreFormData(formSel = "#payoutForm") {
 	togglePaymentOptions();
 	toggleMailAddress();
 	updateCalculations();
+}
+
+// === 手動保存 =====
+function mSave(){
+	updateCalculations();
+	_saveData();
 }
 
 // ====== 隨機填充（Demo） ======
@@ -295,11 +301,13 @@ function autofillForm() {
 	updateCalculations();
 }
 
+
+
 // ====== 事件繫結 ======
 $(async function () {
 	// 全表計算
 	$("#payoutForm").on("input change", "input,select", updateCalculations);
-	$("#calcBtn").on("click", updateCalculations);
+	$("#calcBtn").on("click", mSave);
 
 	// UI 切換
 	$(document)
@@ -324,15 +332,17 @@ function _saveData(json){
 	
 	const companyName = $("#companyName").val();
 	const formNumberDisplay = $("#formNumberDisplay").val();
-	const saved = saveData(json.formNumber + json.companyName, JSON.stringify(json));
-	if(saved){
-		// localStorage 移除所有 LS_PREFIX 開頭的 item
-		Object.keys(localStorage).forEach(key => {
-			if (key.startsWith(LS_PREFIX)) {
-				localStorage.removeItem(key);
-			}
-		});
-	}
+	saveData(`${formNumberDisplay}-${companyName}`, JSON.stringify(json), function(success){
+		if(success){
+			// localStorage 移除所有 LS_PREFIX 開頭的 item
+			Object.keys(localStorage).forEach(key => {
+				if (key.startsWith(LS_PREFIX)) {
+					localStorage.removeItem(key);
+				}
+			});
+		}
+	});
+
 }
 
 // 綁定「自動填入假資料」按鈕

@@ -35,31 +35,6 @@ export function validateConfig(payload: any): string | null {
 		return "allowRegistration must be boolean";
 	}
 
-	/* ---------- (b) 固定 5 頁面，可省略 ---------- */
-	const pages = ["notes"] as const;
-
-	for (const key of pages) {
-		if (!(key in payload)) continue; // 缺少就跳過
-
-		const p = payload[key];
-		// 結構必須是物件
-		if (typeof p !== "object" || p === null) {
-			delete payload[key];
-			continue;
-		}
-
-		// URL 檢查：若無或無效 → 整頁移除
-		if (!p.url || !isValidUrl(p.url)) {
-			delete payload[key];
-			continue;
-		}
-
-		// TOKEN 必須為字串；若無 / 空字串則移除 token 欄
-		if ("token" in p && typeof p.token !== "string") {
-			delete p.token;
-		}
-	}
-
 	/* ---------- (c) extra：陣列可省略 ---------- */
 	if ("extra" in payload) {
 		if (!Array.isArray(payload.extra)) {

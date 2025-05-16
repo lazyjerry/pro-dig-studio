@@ -2,11 +2,15 @@
 需要指定參數
 	const API_BASE = "/api/data";
   const DATA_TYPE = "quote";
+
+  toast.js
   */
 
 //取得 ?id=xx
 function getItemID() {
 	const urlParams = new URLSearchParams(window.location.search);
+
+  // console.log("getItemID","id "+ urlParams.get("id"));
 	return urlParams.get("id");
 }
 
@@ -39,7 +43,7 @@ async function readData(id) {
 		if (!res.ok) throw new Error("SERVER_ERROR");
 
 		const result = await res.json();
-    console.log("readData" , result);
+    // console.log("readData" , result);
 		return result.info;
 	} catch (err) {
 		console.error(err);
@@ -47,48 +51,69 @@ async function readData(id) {
 	}
 }
 
-async function saveData(name, info, callback = null) {
-	const id = getItemID();
-	let apiUrl = API_BASE;
-	let method = "POST";
-	if (id && id > 0) {
-		apiUrl = `${API_BASE}/${id}`;
-		method = "PUT";
-	}
-	try {
-		const res = await fetch(apiUrl, {
-			method: method,
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ type: DATA_TYPE, name, info }),
-		});
-		if (!res.ok) throw new Error("SERVER_ERROR");
+/**
+ * 儲存資料（同時段僅允許 1 個請求）
+ * @param {string}   name
+ * @param {Object}   info
+ * @param {Function} callback  (boolean success) => void
+ * @returns {Promise<boolean>} true 成功 / false 失敗或被鎖定
+ */
+async function saveData (name, info, callback = null) {
+  /* ---------- 互斥鎖：若正在存檔就拒絕 ---------- */
+  if (saveData._busy) {
+    console.warn('saveData 正在執行中，已忽略重複呼叫');
+    callback?.(false);                      // 讓 UI 知道沒有成功
+    return false;
+  }
+  saveData._busy = true;                    // 上鎖
 
-		console.log("save", id);
+  /* ---------- 主要邏輯 ---------- */
+  const id      = getItemID();
+  let   apiUrl  = API_BASE;
+  let   method  = 'POST';
 
-		const result = await res.json();
-		console.log(result);
-		console.log("save", id);
-		if (!id || id <= 0) {
-			// 如果沒有 id，表示新建，從回傳結果取得新 id 並更新網址
-			if (result && result.info && result.info.id) {
-				const newUrl = window.location.origin + window.location.pathname + "?id=" + result.info.id;
-				console.log("newUrl", newUrl);
-				window.history.pushState({ path: newUrl }, "", newUrl);
-			}
-			if (callback) {
-				callback(true);
-			}
-		}
+  if (id && id > 0) {
+    apiUrl = `${API_BASE}/${id}`;
+    method = 'PUT';
+  }
 
-		return true;
-	} catch (err) {
-		console.error(err);
-		alert("保存失敗，請稍後再試");
+  console.log("saveData","is Update "+ (id && id > 0));
 
-		if (callback) {
-			callback(false);
-		}
+  try {
+    const res = await fetch(apiUrl, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: DATA_TYPE, name, info })
+    });
+    if (!res.ok) throw new Error('SERVER_ERROR');
 
-		return false;
-	}
+    const result = await res.json();
+
+    // ------- 新增時：更新網址 -------
+    if (!id || id <= 0) {
+      const newID = result?.info?.id;
+      if (newID) {
+        const newURL = `${location.origin}${location.pathname}?id=${newID}`;
+        // console.log('saveData','newURL'+ newURL);
+        history.pushState({ path: newURL }, '', newURL);
+      }
+    }
+
+    toast("資料已保存", "success", {
+      timeOut: 2500,          // 2.5 秒自動關閉
+      positionClass: "toast-bottom-right",
+    });
+    callback?.(true);
+    return true;                            // ← 成功
+  } catch (err) {
+    console.error(err);
+    alert('保存失敗，請稍後再試');
+    callback?.(false);
+    return false;                           // ← 失敗
+  } finally {
+    saveData._busy = false;                 // 解鎖 (成功/失敗皆執行)
+  }
 }
+
+/* 初始化鎖狀態 */
+saveData._busy = false;

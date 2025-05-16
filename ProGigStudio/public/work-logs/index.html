@@ -19,6 +19,8 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 		<link rel="stylesheet" href="/work-logs/style.css" />
 		<link rel="stylesheet" href="/work-logs/tailwindcss.css" />
+
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 	</head>
 	<body class="bg-gray-50 min-h-screen">
 		<div class="container mx-auto px-4 py-8 max-w-4xl">
@@ -65,7 +67,6 @@
 							type="text"
 							placeholder="選擇日期..."
 							class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent datepicker"
-							readonly
 						/>
 						<span class="clear-search absolute top2p8 right-3 hidden" data-target="search-date">
 							<i class="fas fa-times"></i>
@@ -82,7 +83,7 @@
 
 			<!-- 新增工作區塊 -->
 			<div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-100">
-				<h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
+				<h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center" id="test">
 					<i class="fas fa-plus-circle mr-2 text-green-500"></i>
 					新增工作紀錄
 				</h2>
@@ -306,6 +307,7 @@
 			</div>
 
 			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 			<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 			<script src="https://npmcdn.com/flatpickr/dist/l10n/zh-tw.js"></script>
 
@@ -322,6 +324,7 @@
 					date: "",
 				};
 			</script>
+			<script src="/js/common.js"></script>
 			<script src="/work-logs/func.js"></script>
 			<script src="/work-logs/script.js"></script>
 		</div>
