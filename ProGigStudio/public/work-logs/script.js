@@ -48,8 +48,9 @@ $(async function () {
   $("#delete-log").on("click", function () {
     const logId = Number($(this).data("logId"));
     const log   = workLogs.find((l) => l.id === logId);
-
-    $("#confirm-delete").data("logId", logId);
+    
+    $("#confirm-delete").attr("data-logId", log.id);
+     $("#confirm-delete").attr("data-title", log.title);
     $("#delete-confirm-title").text(log.title);
     $("#delete-confirm-modal").removeClass("hidden");
   });

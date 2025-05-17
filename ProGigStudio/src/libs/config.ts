@@ -12,7 +12,15 @@ export async function loadConfig(c: Context) {
 	console.log("loadConfig", raw);
 	return raw
 		? JSON.parse(raw)
-		: { allowRegistration: true, extra: [{ label: "TEST", url: "https://goblinapp.com/", token: "123" }] };
+		: {
+				allowRegistration: true,
+				extra: [
+					{ label: "SEO檢查工具", url: "https://seo.jlab-app.cloud", token: "" },
+					{ label: "螢幕檢查工具", url: "https://screen-size-detector.jlab-app.cloud", token: "" },
+					{ label: "iLovePDF", url: "https://www.ilovepdf.com/zh-tw", token: "newWindows" },
+					{ label: "IT-TOOLS", url: "https://it-tool.jerryzheli.com", token: "" },
+				],
+		  };
 }
 
 export async function saveConfig(c: Context, cfg: unknown) {

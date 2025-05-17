@@ -9,9 +9,9 @@
 //取得 ?id=xx
 function getItemID() {
 	const urlParams = new URLSearchParams(window.location.search);
-
-  // console.log("getItemID","id "+ urlParams.get("id"));
-	return urlParams.get("id");
+  const id = urlParams.get("id");
+  console.log("getItemID",`id ${id}`);
+	return id;
 }
 
 // 取得設定檔案 目前有 logoUrl
@@ -91,18 +91,20 @@ async function saveData (name, info, callback = null) {
 
     // ------- 新增時：更新網址 -------
     if (!id || id <= 0) {
-      const newID = result?.info?.id;
+      const newID = result?.id;
+
+
+      console.log("saveData", result);
+      console.log("saveData newID", newID);
+
       if (newID) {
         const newURL = `${location.origin}${location.pathname}?id=${newID}`;
-        // console.log('saveData','newURL'+ newURL);
+        console.log('saveData','newURL'+ newURL);
         history.pushState({ path: newURL }, '', newURL);
       }
     }
 
-    toast("資料已保存", "success", {
-      timeOut: 2500,          // 2.5 秒自動關閉
-      positionClass: "toast-bottom-right",
-    });
+    showToast("資料已保存", "success");
     callback?.(true);
     return true;                            // ← 成功
   } catch (err) {

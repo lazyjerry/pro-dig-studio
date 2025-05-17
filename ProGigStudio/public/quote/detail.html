@@ -2,22 +2,51 @@
 <html lang="zh-TW">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="robots" content="noindex, nofollow" />
+		<meta
+			name="robots"
+			content="noindex, nofollow"
+		/>
 		<title>報價單產生器</title>
 		<!-- Favicon & Logo -->
-		<link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
-		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
-
-		<link href="./tailwindcss.css" rel="stylesheet" />
-		<link href="./style.css" rel="stylesheet" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="/logo.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="/logo.png"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="./tailwindcss.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="./style.css"
+			rel="stylesheet"
+		/>
 	</head>
 
 	<body class="bg-gray-50">
 		<div class="container mx-auto my-8 px-4 max-w-6xl">
 			<div class="gradient-bg text-white rounded-xl p-6 mb-8 shadow-soft hover-scale">
 				<h1 class="text-3xl font-bold text-center mb-2">報價單產生器</h1>
-				<p class="text-center text-indigo-100" id="quoteNumberLabel">快速建立專業的報價單，提升您的業務效率</p>
+				<p
+					class="text-center text-indigo-100"
+					id="quoteNumberLabel"
+				>
+					快速建立專業的報價單，提升您的業務效率
+				</p>
 			</div>
 
 			<form
@@ -27,7 +56,11 @@
 				action="/api/data/pdf?type=quote"
 				class="bg-white rounded-xl shadow-soft p-6 hover-scale form-footer"
 			>
-				<input type="hidden" name="data" id="dataField" />
+				<input
+					type="hidden"
+					name="data"
+					id="dataField"
+				/>
 
 				<div class="flex flex-col lg:flex-row gap-8">
 					<!-- Left Column: Basic Information -->
@@ -37,7 +70,10 @@
 
 							<div class="space-y-4">
 								<div>
-									<label for="logoUrl" class="block text-sm font-medium text-gray-700 mb-1">
+									<label
+										for="logoUrl"
+										class="block text-sm font-medium text-gray-700 mb-1"
+									>
 										Logo URL
 										<span class="text-xs text-gray-500">（請注意 CORS 問題）</span>
 									</label>
@@ -52,7 +88,12 @@
 								</div>
 
 								<div>
-									<label for="providerName" class="block text-sm font-medium text-gray-700 mb-1">乙方 (報價單位)</label>
+									<label
+										for="providerName"
+										class="block text-sm font-medium text-gray-700 mb-1"
+									>
+										乙方 (報價單位)
+									</label>
 									<input
 										type="text"
 										id="providerName"
@@ -64,7 +105,12 @@
 								</div>
 
 								<div>
-									<label for="providerContact" class="block text-sm font-medium text-gray-700 mb-1">乙方聯絡資訊</label>
+									<label
+										for="providerContact"
+										class="block text-sm font-medium text-gray-700 mb-1"
+									>
+										乙方聯絡資訊
+									</label>
 									<textarea
 										id="providerContact"
 										name="providerContact"
@@ -76,7 +122,12 @@
 								</div>
 
 								<div>
-									<label for="customerName" class="block text-sm font-medium text-gray-700 mb-1">甲方 (客戶)</label>
+									<label
+										for="customerName"
+										class="block text-sm font-medium text-gray-700 mb-1"
+									>
+										甲方 (客戶)
+									</label>
 									<input
 										type="text"
 										id="customerName"
@@ -88,7 +139,12 @@
 								</div>
 
 								<div>
-									<label for="customerContact" class="block text-sm font-medium text-gray-700 mb-1">甲方聯絡資訊</label>
+									<label
+										for="customerContact"
+										class="block text-sm font-medium text-gray-700 mb-1"
+									>
+										甲方聯絡資訊
+									</label>
 									<textarea
 										id="customerContact"
 										name="customerContact"
@@ -106,7 +162,12 @@
 
 							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
-									<label for="quoteNumber" class="block text-sm font-medium text-gray-700 mb-1">報價單編號</label>
+									<label
+										for="quoteNumber"
+										class="block text-sm font-medium text-gray-700 mb-1"
+									>
+										報價單編號
+									</label>
 									<input
 										type="text"
 										id="quoteNumber"
@@ -117,7 +178,12 @@
 								</div>
 
 								<div>
-									<label for="dateInput" class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+									<label
+										for="dateInput"
+										class="block text-sm font-medium text-gray-700 mb-1"
+									>
+										日期
+									</label>
 									<input
 										type="date"
 										id="dateInput"
@@ -128,7 +194,12 @@
 								</div>
 
 								<div>
-									<label for="deadlineInput" class="block text-sm font-medium text-gray-700 mb-1">截止日期</label>
+									<label
+										for="deadlineInput"
+										class="block text-sm font-medium text-gray-700 mb-1"
+									>
+										截止日期
+									</label>
 									<input
 										type="date"
 										id="deadlineInput"
@@ -141,7 +212,12 @@
 						</div>
 
 						<div class="bg-indigo-50 rounded-lg p-4">
-							<h2 class="text-xl font-semibold text-indigo-800 mb-4" id="test">備註</h2>
+							<h2
+								class="text-xl font-semibold text-indigo-800 mb-4"
+								id="test"
+							>
+								備註
+							</h2>
 							<textarea
 								id="remarks"
 								name="remarks"
@@ -165,7 +241,10 @@
 							<h2 class="text-xl font-semibold text-indigo-800 mb-4">品項細節</h2>
 
 							<div class="overflow-x-auto">
-								<table id="itemsTable" class="min-w-full divide-y divide-gray-200">
+								<table
+									id="itemsTable"
+									class="min-w-full divide-y divide-gray-200"
+								>
 									<tbody class="bg-white divide-y divide-gray-200">
 										<!-- Rows will be added dynamically -->
 									</tbody>
@@ -187,7 +266,12 @@
 									title="刷新"
 									class="w-10 h-10 flex items-center justify-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
 								>
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+									>
 										<path
 											fill-rule="evenodd"
 											d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
@@ -202,7 +286,12 @@
 							<h2 class="text-xl font-semibold text-indigo-800 mb-4">稅金設定</h2>
 
 							<div>
-								<label for="taxPercent" class="block text-sm font-medium text-gray-700 mb-1">稅金百分比 (%)</label>
+								<label
+									for="taxPercent"
+									class="block text-sm font-medium text-gray-700 mb-1"
+								>
+									稅金百分比 (%)
+								</label>
 								<input
 									type="number"
 									id="taxPercent"
@@ -244,11 +333,22 @@
 								</thead>
 								<tbody class="bg-white divide-y divide-gray-200">
 									<tr>
-										<td id="subtotalDisplay" class="px-4 py-3 whitespace-nowrap text-lg font-semibold text-gray-900">
+										<td
+											id="subtotalDisplay"
+											class="px-4 py-3 whitespace-nowrap text-lg font-semibold text-gray-900"
+										>
 											0
 										</td>
-										<td id="taxDisplay" class="px-4 py-3 whitespace-nowrap text-lg font-semibold text-gray-900">0</td>
-										<td id="totalDisplay" class="px-4 py-3 whitespace-nowrap text-lg font-semibold text-indigo-600">
+										<td
+											id="taxDisplay"
+											class="px-4 py-3 whitespace-nowrap text-lg font-semibold text-gray-900"
+										>
+											0
+										</td>
+										<td
+											id="totalDisplay"
+											class="px-4 py-3 whitespace-nowrap text-lg font-semibold text-indigo-600"
+										>
 											0
 										</td>
 									</tr>
@@ -258,7 +358,12 @@
 					</div>
 				</div>
 
-				<input type="file" id="importJsonFile" accept=".json" onchange="importFormJSON(event)" />
+				<input
+					type="file"
+					id="importJsonFile"
+					accept=".json"
+					onchange="importFormJSON(event)"
+				/>
 			</form>
 		</div>
 
@@ -293,7 +398,10 @@
 		</div>
 
 		<!-- Hidden item template -->
-		<script type="text/template" id="itemTemplate">
+		<script
+			type="text/template"
+			id="itemTemplate"
+		>
 			<tr class="descRow">
 			    <td colspan="3" class="px-4 py-3">
 			        <textarea
@@ -348,6 +456,8 @@
 		<!-- Scripts -->
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+		<script src="/js/toast.js"></script>
 		<script>
 			const API_BASE = "/api/data";
 			const DATA_TYPE = "quote";

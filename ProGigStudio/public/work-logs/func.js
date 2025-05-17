@@ -143,11 +143,13 @@ async function saveWorkLog() {
 
 // 確認刪除紀錄
 async function confirmDeleteLog() {
-  const logId = parseInt(this.dataset.logId);
+  const logId = parseInt( $("#confirm-delete").attr("data-logId") );
+  const title = $("#confirm-delete").attr("data-title");
   const input = document.getElementById("delete-confirm-input").value.trim();
   const log = workLogs.find(l => l.id === logId);
-  
-  if (input !== log.title){
+  // console.log("confirmDeleteLog", logId);
+  // console.log("confirmDeleteLog", title);
+  if (input !== title){
     return toast("輸入的工作名稱不匹配，請重新輸入");
   }
 
@@ -158,49 +160,14 @@ async function confirmDeleteLog() {
     document.getElementById("delete-confirm-modal").classList.add("hidden");
     document.getElementById("log-modal").classList.add("hidden");
     
-    loadLogs(false,1);
+    document.getElementById(`log-elem-${logId}`).classList.add("hidden");
+    
   } catch (err) {
     console.error(err);
     showToast("刪除失敗，請稍後再試", "error");
   }
 }
 
-// ---- UI Helper Functions ----
-// Show toast notification
-function showToast(message, type) {
-  const toast = document.createElement("div");
-  let bgColor = "bg-blue-500";
-
-  if (type === "success") {
-    bgColor = "bg-green-500";
-  } else if (type === "error") {
-    bgColor = "bg-red-500";
-  } else if (type === "warning") {
-    bgColor = "bg-yellow-500";
-  }
-
-  toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white ${bgColor} shadow-lg flex items-center`;
-  toast.innerHTML = `
-            <i class="fas ${
-              type === "success"
-                ? "fa-check-circle"
-                : type === "error"
-                ? "fa-exclamation-circle"
-                : "fa-info-circle"
-            } mr-2"></i>
-            ${message}
-        `;
-
-  document.body.appendChild(toast);
-
-  // Auto remove after 3 seconds
-  setTimeout(() => {
-    toast.classList.add("opacity-0", "transition-opacity", "duration-300");
-    setTimeout(() => {
-      document.body.removeChild(toast);
-    }, 300);
-  }, 3000);
-}
 
 // Escape HTML to prevent XSS and injection
 function escapeHtml(str) {
@@ -285,6 +252,7 @@ function renderWorkLogs(append = false, newLogs = []) {
         </button>
       </div>
     `;
+    logElement.id=`log-elem-${log.id}`;
     container.appendChild(logElement);
 
     // 只為這一筆綁定 listener
@@ -356,52 +324,62 @@ function getStatusColorClass(status) {
 
 // ----- 隨機產生一筆測試資料並填入表單 ------
 function autoFillRandomData() {
-
   // 先重設表單
   resetForm();
 
   // 隨機標題
   const titles = [
-    "客戶會議回顧",
-    "Bug 修復檢討",
-    "新功能需求討論",
-    "性能優化測試",
-    "版本發布準備"
+    "前端功能開發：會員登入流程",
+    "後端 API 優化：訂單查詢",
+    "資料庫維護：每日備份任務",
+    "使用者測試：新手引導頁面",
+    "安全性掃描：漏洞自動化報告",
+    "UI 調整：深色模式完善",
+    "效能測試：壓力測試報表"
   ];
   const title = titles[Math.floor(Math.random() * titles.length)];
   document.getElementById("work-title").value = title;
 
-  // **將紀錄時間設成當下本地時間（到分）**
+  // 紀錄時間設成當下本地時間到分
   const now = new Date();
-  // 取得 YYYY-MM-DD HH:mm 格式
-  const formatted = getLocalTime(now);
-  // 更新顯示
+  const formatted = getLocalTime(now); // 假設已提供 YYYY-MM-DD HH:mm
   const dateNote = document.querySelector(".mb-6 p");
-  if (dateNote) dateNote.textContent = `紀錄時間: ${formatted}`;
+  if (dateNote) dateNote.textContent = `紀錄時間：${formatted}`;
 
-
-  // 產生隨機 1–3 個工作項目
-  const count = Math.floor(Math.random() * 3) + 1;
-  for (let i = 0; i < count - 1; i++) {
+  // 產生隨機 2–5 個工作項目
+  const itemCount = Math.floor(Math.random() * 4) + 2;
+  for (let i = 0; i < itemCount - 1; i++) {
     addWorkItemField();
   }
 
+  // 狀態可選清單
   const statuses = ["尚未開始", "進行中", "已完成", "審核中", "擱置"];
+
+  // 描述範本
   const descriptions = [
-    ` 臣亮言：先帝創業未半，而中道崩殂。\n今天下三分，益州疲弊，此誠危急存亡之秋也。\n然侍衛之臣，不懈於內；忠志之士，忘身於外者，蓋追先帝之殊遇，欲報之於陛下也。\n誠宜開張聖聽，以光先帝遺德，恢弘志士之氣；不宜妄自菲薄，引喻失義，以塞忠諫之路也。\n宮中府中，俱為體，陟罰臧否，不宜異同。\n若有作姦犯科，及為忠善者，宜付有司，論其刑賞，以昭陛下平明之治，不宜篇私，使內外異法也。\n侍中、侍郎郭攸之、費褘、董允等，此皆良實，志慮忠純，是以先帝簡拔以遺陛下。\n愚以為宮中之事，事無大小，悉以咨之，然後施行，必能裨補闕漏，有所廣益。\n將軍向寵，性行淑均，曉暢軍事，試用於昔日，先帝稱之曰「能」，是以眾議舉寵為督。\n愚以為營中之事，悉以咨之，必能使行陣和睦，優劣得所。\n親賢臣，遠小人，此先漢所以興隆也；親小人，遠賢臣，此後漢所以傾頹也。\n先帝在時，每與臣論此事，未嘗不歎息痛恨於桓、靈也。\n侍中、尚書、長史；參軍，此悉貞良死節之臣也，願陛下親之信之，則漢室之隆，可計日而待也。`,
-    `臣受命之日，寢不安席，食不甘味。\n思惟北征，宜先入南，故五月渡瀘，深入不毛，并日而食。\n臣非不自惜也，顧王業不可偏安於蜀都，故冒危難，以奉先帝之遺意。\n而議者謂為非計。\n今賊適疲於西，又務於東。\n兵法乘勞，此進趨之時也。`,
-    `夫難平者，事也。\n昔先帝敗軍於楚，當此時，曹操拊手，謂天下已定。\n然後先帝東連吳越，西取巴蜀，舉兵北征，夏侯授首：此操之失計，而漢事將成也。\n然後吳更違盟，關羽毀敗，秭歸蹉跌，曹丕稱帝。\n凡事如是，難可逆料。\n臣鞠躬盡瘁，死而後已。\n至於成敗利鈍，非臣之明所能逆睹也。`,
-    `臣本布衣，躬耕於南陽，苟全性命於亂世，不求聞達於諸侯。\n先帝不以臣卑鄙，猥自枉屈，三顧臣於草廬之中，諮臣以當世之事，由是感激，遂許先帝以驅馳。\n後值傾覆，受任於敗軍之際，奉命於危難之間，爾來二十有一年矣！先帝知臣謹慎，故臨崩寄臣以大事也。\n受命以來，夙夜憂勤，恐託付不效，以傷先帝之明。\n故五月渡瀘，深入不毛。\n今南方已定，兵甲已足，當獎率三軍，北定中原，庶竭駑鈍，攘除奸凶，興復漢室，還於舊都；此臣所以報先帝而忠陛下之職分也。\n至於斟酌損益，進盡忠言，則攸之、褘、允之任也。\n願陛下託臣以討賊興復之效；不效，則治臣之罪，以告先帝之靈。\n若無興德之言，則戮允等，以彰其慢。\n陛下亦宜自課，以諮諏善道，察納雅言，深追先帝遺詔，臣不勝受恩感激。\n今當遠離，臨表涕零，不知所云。`,
-    `先帝慮漢賊不兩立，王業不偏安，故託臣以討賊也。\n以先帝之明，量臣之才，固知臣伐賊，才弱敵彊也。\n然不伐賊，王業亦亡；惟坐而待亡，孰與伐之？是故託臣而弗疑也。`
-  ]
-  document.querySelectorAll(".work-item").forEach((item, idx) => {
-    // 隨機名稱與描述
-    item.querySelector(".item-name").value = `測試項目 ${idx + 1}`;
-    const des = statuses[Math.floor(Math.random() * statuses.length)];
-    item.querySelector(".item-description").value = `這是第 ${idx + 1} 項的隨機描述。\n` + descriptions[Math.floor(Math.random() * descriptions.length)];   
+    "撰寫 API 文件，並加入範例回應格式。",
+    "完成前端表單驗證，包含必填欄位與格式檢查。",
+    "測試環境布署，確認所有服務正常運行。",
+    "根據性能分析結果，進行 SQL index 優化。",
+    "撰寫單元測試，覆蓋率至少達到 80%。",
+    "更新套件依賴，並修復相容性問題。"
+  ];
+
+  // 填入每個 work-item（只填名稱、描述、狀態）
+  document.querySelectorAll(".work-item").forEach((itemEl, idx) => {
+    // 隨機名稱
+    itemEl.querySelector(".item-name").value = `測試項目 ${idx + 1}`;
+
+    // 隨機描述（兩行）
+    const descLines = [
+      descriptions[Math.floor(Math.random() * descriptions.length)],
+      descriptions[Math.floor(Math.random() * descriptions.length)]
+    ];
+    itemEl.querySelector(".item-description").value = descLines.join("\n");
+
     // 隨機狀態
-    const sel = $(item.querySelector(".item-status"));
-    const st = statuses[Math.floor(Math.random() * statuses.length)];
-    sel.val(st).trigger("change");
+    const status = statuses[Math.floor(Math.random() * statuses.length)];
+    const statusEl = itemEl.querySelector(".item-status");
+    if (statusEl) statusEl.value = status;
   });
 }
