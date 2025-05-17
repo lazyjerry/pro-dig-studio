@@ -107,9 +107,15 @@ function addExtraPage(label, url, token = "") {
   /* === 1. 建立 DOM === */
   const container = document.createElement("div");
   container.id = pageId;
+  let attr = '';
+  if(token == 'newWindows') {
+    attr += 'target="_blank"';
+  }else if('' != token){
+    url = `${url}?${token}`;
+  }
   container.innerHTML = `
     <div class="flex items-center justify-between group">
-      <a href="#" data-url="${url}" data-token="${token}"
+      <a href="#" data-url="${url}" data-token="${token}" ${attr} 
          class="menu-item flex items-center p-2 pl-3 text-gray-700 hover:text-gray-900 w-full rounded">
         <i class="fas fa-external-link-alt mr-3 text-sm"></i>
         <span class="truncate">${label}</span>
@@ -127,7 +133,13 @@ function addExtraPage(label, url, token = "") {
     e.preventDefault();
     document.querySelectorAll(".menu-item").forEach((el) => el.classList.remove("active"));
     link.classList.add("active");
-    loadIframe(link.dataset.url);
+    if(link.dataset.token == "newWindows"){
+      window.open(link.dataset.url,'_blank');
+    }else if(link.dataset.token != ''){
+      loadIframe(link.dataset.url + "?" + link.dataset.token);
+    }else{
+      loadIframe(link.dataset.url);
+    }
     iframeContainer.classList.remove("hidden");
     settingsPanel.classList.add("hidden");
   });

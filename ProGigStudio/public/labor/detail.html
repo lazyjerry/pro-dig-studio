@@ -2,16 +2,41 @@
 <html lang="zh-TW">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
 		<!-- 基本 -->
 		<title>勞務報酬單產生器︱線上自動計算稅額・快速匯出 PDF</title>
 		<!-- Favicon & Logo -->
-		<link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="/logo.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="/logo.png"
+		/>
 
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
-		<link rel="stylesheet" href="./main.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="./main.css"
+		/>
 	</head>
 	<body class="bg-gray-50 min-h-screen">
 		<div class="max-w-4xl mx-auto px-4 py-8">
@@ -22,19 +47,30 @@
 						<i class="fas fa-file-invoice-dollar text-primary-600 mr-3"></i>
 						勞務報酬單產生器
 					</h1>
-					<p class="text-gray-500 mt-2" id="subTitle">快速產生專業的勞務報酬單，自動計算稅款與健保費</p>
+					<p
+						class="text-gray-500 mt-2"
+						id="subTitle"
+					>
+						快速產生專業的勞務報酬單，自動計算稅款與健保費
+					</p>
 				</div>
 				<div class="mt-4 md:mt-0 bg-white p-3 rounded-lg shadow-sm border border-gray-200">
 					<div class="flex items-center">
 						<span class="text-sm font-medium text-gray-500 mr-2">表單編號：</span>
-						<span id="formNumber" class="font-mono font-bold text-primary-700"></span>
+						<span
+							id="formNumber"
+							class="font-mono font-bold text-primary-700"
+						></span>
 					</div>
 					<div class="text-xs text-gray-400 mt-1">系統自動產生</div>
 				</div>
 			</div>
 
 			<!-- 表單主體 -->
-			<form id="payoutForm" class="bg-white rounded-xl shadow-sm overflow-hidden">
+			<form
+				id="payoutForm"
+				class="bg-white rounded-xl shadow-sm overflow-hidden"
+			>
 				<!-- 1. 表頭資訊 -->
 				<section class="form-section p-6 border-b border-gray-100">
 					<div class="flex items-center mb-6">
@@ -44,7 +80,10 @@
 
 					<div class="grid md:grid-cols-2 gap-6">
 						<div>
-							<label for="companyName" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="companyName"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								公司名稱
 								<span class="text-red-500 ml-1">*</span>
 								<div class="tooltip ml-2">
@@ -66,7 +105,12 @@
 						</div>
 
 						<div>
-							<label for="formNumber" class="block text-sm font-medium text-gray-700 mb-1">表單編號</label>
+							<label
+								for="formNumber"
+								class="block text-sm font-medium text-gray-700 mb-1"
+							>
+								表單編號
+							</label>
 							<input
 								id="formNumberDisplay"
 								readonly
@@ -80,13 +124,21 @@
 				<section class="form-section p-6 border-b border-gray-100">
 					<div class="flex items-center mb-6">
 						<div class="step-badge bg-primary-100 text-primary-700 mr-3">2</div>
-						<h2 class="text-xl font-semibold text-gray-800" id="test">領款人基本資料</h2>
+						<h2
+							class="text-xl font-semibold text-gray-800"
+							id="test"
+						>
+							領款人基本資料
+						</h2>
 					</div>
 
 					<div class="grid md:grid-cols-1 gap-6 mb-4">
 						<!-- 美化后的姓名输入 -->
 						<div class="name-input-container">
-							<label for="personName" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="personName"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								姓名
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -108,7 +160,14 @@
 							</p>
 							<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
 								<label class="resident-option">
-									<input type="radio" name="residentType" value="resident" required class="sr-only" checked />
+									<input
+										type="radio"
+										name="residentType"
+										value="resident"
+										required
+										class="sr-only"
+										checked
+									/>
 									<span
 										class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 									>
@@ -116,7 +175,12 @@
 									</span>
 								</label>
 								<label class="resident-option">
-									<input type="radio" name="residentType" value="nonResidentTW" class="sr-only" />
+									<input
+										type="radio"
+										name="residentType"
+										value="nonResidentTW"
+										class="sr-only"
+									/>
 									<span
 										class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 									>
@@ -124,7 +188,12 @@
 									</span>
 								</label>
 								<label class="resident-option">
-									<input type="radio" name="residentType" value="foreign183" class="sr-only" />
+									<input
+										type="radio"
+										name="residentType"
+										value="foreign183"
+										class="sr-only"
+									/>
 									<span
 										class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 									>
@@ -132,7 +201,12 @@
 									</span>
 								</label>
 								<label class="resident-option">
-									<input type="radio" name="residentType" value="foreignNot183" class="sr-only" />
+									<input
+										type="radio"
+										name="residentType"
+										value="foreignNot183"
+										class="sr-only"
+									/>
 									<span
 										class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 									>
@@ -151,7 +225,14 @@
 							</p>
 							<div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
 								<label class="radio-btn flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer">
-									<input type="radio" name="idType" value="idcard" required class="sr-only" checked />
+									<input
+										type="radio"
+										name="idType"
+										value="idcard"
+										required
+										class="sr-only"
+										checked
+									/>
 									<span
 										class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 									>
@@ -159,7 +240,12 @@
 									</span>
 								</label>
 								<label class="radio-btn flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer">
-									<input type="radio" name="idType" value="arc" class="sr-only" />
+									<input
+										type="radio"
+										name="idType"
+										value="arc"
+										class="sr-only"
+									/>
 									<span
 										class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 									>
@@ -167,7 +253,12 @@
 									</span>
 								</label>
 								<label class="radio-btn flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer">
-									<input type="radio" name="idType" value="passport" class="sr-only" />
+									<input
+										type="radio"
+										name="idType"
+										value="passport"
+										class="sr-only"
+									/>
 									<span
 										class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 									>
@@ -178,7 +269,10 @@
 						</div>
 
 						<div>
-							<label for="idNumber" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="idNumber"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								證號
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -196,7 +290,10 @@
 						</div>
 
 						<div class="md:col-span-2">
-							<label for="addrReg" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="addrReg"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								戶籍地址
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -211,7 +308,10 @@
 						</div>
 
 						<div class="md:col-span-2">
-							<label for="addrComm" class="block text-sm font-medium text-gray-700 mb-1">
+							<label
+								for="addrComm"
+								class="block text-sm font-medium text-gray-700 mb-1"
+							>
 								通訊地址
 								<span class="text-gray-400 text-xs ml-1">(若與戶籍地址相同可不填)</span>
 							</label>
@@ -225,7 +325,10 @@
 						</div>
 
 						<div>
-							<label for="phone" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="phone"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								連絡電話
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -253,7 +356,10 @@
 
 					<div class="grid md:grid-cols-2 gap-6">
 						<div>
-							<label for="incomeType" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="incomeType"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								所得類別
 								<span class="text-red-500 ml-1">*</span>
 								<div class="tooltip ml-2">
@@ -267,7 +373,12 @@
 									required
 									class="w-full input-focus px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none appearance-none"
 								>
-									<option value="50" selected>(50) 薪資所得丨不固定性質</option>
+									<option
+										value="50"
+										selected
+									>
+										(50) 薪資所得丨不固定性質
+									</option>
 									<option value="9A">(9A) 執行業務</option>
 									<option value="9B">(9B) 執行業務丨18萬免稅額</option>
 									<option value="92">(92) 其他所得</option>
@@ -294,7 +405,10 @@
 						</div>
 
 						<div>
-							<label for="incomeAmount" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="incomeAmount"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								總金額 (NT$)
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -331,7 +445,12 @@
 								<i class="fas fa-percentage text-gray-300"></i>
 							</div>
 							<div class="flex items-end">
-								<span class="text-2xl font-bold text-gray-800" id="taxDeduct">0</span>
+								<span
+									class="text-2xl font-bold text-gray-800"
+									id="taxDeduct"
+								>
+									0
+								</span>
 								<span class="ml-1 text-gray-500">NT$</span>
 							</div>
 						</div>
@@ -342,7 +461,12 @@
 								<i class="fas fa-heartbeat text-gray-300"></i>
 							</div>
 							<div class="flex items-end">
-								<span class="text-2xl font-bold text-gray-800" id="nhiDeduct">0</span>
+								<span
+									class="text-2xl font-bold text-gray-800"
+									id="nhiDeduct"
+								>
+									0
+								</span>
 								<span class="ml-1 text-gray-500">NT$</span>
 							</div>
 						</div>
@@ -353,7 +477,12 @@
 								<i class="fas fa-wallet text-primary-300"></i>
 							</div>
 							<div class="flex items-end">
-								<span class="text-2xl font-bold text-primary-700" id="netPay">0</span>
+								<span
+									class="text-2xl font-bold text-primary-700"
+									id="netPay"
+								>
+									0
+								</span>
 								<span class="ml-1 text-primary-500">NT$</span>
 							</div>
 						</div>
@@ -371,7 +500,14 @@
 						<label
 							class="radio-btn flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer flex-1 min-w-[120px]"
 						>
-							<input type="radio" name="payMethod" value="check" required class="sr-only" checked />
+							<input
+								type="radio"
+								name="payMethod"
+								value="check"
+								required
+								class="sr-only"
+								checked
+							/>
 							<span class="radio-label flex flex-col items-center">
 								<i class="fas fa-money-check-alt text-2xl mb-1"></i>
 								支票
@@ -381,7 +517,12 @@
 						<label
 							class="radio-btn flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer flex-1 min-w-[120px]"
 						>
-							<input type="radio" name="payMethod" value="bank" class="sr-only" />
+							<input
+								type="radio"
+								name="payMethod"
+								value="bank"
+								class="sr-only"
+							/>
 							<span class="radio-label flex flex-col items-center">
 								<i class="fas fa-university text-2xl mb-1"></i>
 								匯款
@@ -391,7 +532,12 @@
 						<label
 							class="radio-btn flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer flex-1 min-w-[120px]"
 						>
-							<input type="radio" name="payMethod" value="cash" class="sr-only" />
+							<input
+								type="radio"
+								name="payMethod"
+								value="cash"
+								class="sr-only"
+							/>
 							<span class="radio-label flex flex-col items-center">
 								<i class="fas fa-money-bill-wave text-2xl mb-1"></i>
 								現金
@@ -400,18 +546,39 @@
 					</div>
 
 					<!-- 現金選項 -->
-					<div id="cashOptions" class="hidden pl-4 border-l-4 border-accent-300 ml-4 mt-4">
+					<div
+						id="cashOptions"
+						class="hidden pl-4 border-l-4 border-accent-300 ml-4 mt-4"
+					>
 						<div class="cash-confirmation">
-							<input type="checkbox" id="cashConfirm" required />
-							<label for="cashConfirm" class="text-sm text-gray-700">已確認收到支付本人之報酬</label>
+							<input
+								type="checkbox"
+								id="cashConfirm"
+								required
+							/>
+							<label
+								for="cashConfirm"
+								class="text-sm text-gray-700"
+							>
+								已確認收到支付本人之報酬
+							</label>
 						</div>
 					</div>
 
 					<!-- 支票選項 -->
-					<div id="checkOptions" class="hidden space-y-4 pl-4 border-l-4 border-accent-300 ml-4">
+					<div
+						id="checkOptions"
+						class="hidden space-y-4 pl-4 border-l-4 border-accent-300 ml-4"
+					>
 						<div class="flex flex-wrap gap-4">
 							<label class="radio-btn flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer">
-								<input type="radio" name="checkReceive" value="pickup" class="sr-only" checked />
+								<input
+									type="radio"
+									name="checkReceive"
+									value="pickup"
+									class="sr-only"
+									checked
+								/>
 								<span
 									class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 								>
@@ -420,7 +587,12 @@
 							</label>
 
 							<label class="radio-btn flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer">
-								<input type="radio" name="checkReceive" value="registered" class="sr-only" />
+								<input
+									type="radio"
+									name="checkReceive"
+									value="registered"
+									class="sr-only"
+								/>
 								<span
 									class="radio-label flex items-center before:w-4 before:h-4 before:rounded-full before:border before:border-gray-300 before:mr-2"
 								>
@@ -429,8 +601,14 @@
 							</label>
 						</div>
 
-						<div id="mailAddrBox" class="hidden">
-							<label for="mailAddr" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+						<div
+							id="mailAddrBox"
+							class="hidden"
+						>
+							<label
+								for="mailAddr"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								掛號寄送地址
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -444,9 +622,15 @@
 					</div>
 
 					<!-- 匯款選項 -->
-					<div id="bankOptions" class="hidden grid md:grid-cols-2 gap-6 pl-4 border-l-4 border-accent-300 ml-4 mt-4">
+					<div
+						id="bankOptions"
+						class="hidden grid md:grid-cols-2 gap-6 pl-4 border-l-4 border-accent-300 ml-4 mt-4"
+					>
 						<div>
-							<label for="bankName" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="bankName"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								銀行
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -463,7 +647,10 @@
 						</div>
 
 						<div>
-							<label for="bankBranch" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="bankBranch"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								分行
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -475,7 +662,10 @@
 						</div>
 
 						<div>
-							<label for="bankAccount" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="bankAccount"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								帳號
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -487,7 +677,10 @@
 						</div>
 
 						<div>
-							<label for="bankHolder" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+							<label
+								for="bankHolder"
+								class="block text-sm font-medium text-gray-700 mb-1 flex items-center"
+							>
 								戶名
 								<span class="text-red-500 ml-1">*</span>
 							</label>
@@ -613,16 +806,26 @@
 		</button>
 
 		<!-- 隱藏檔案輸入（匯入用）-->
-		<input type="file" id="jsonFileInput" accept=".json" class="hidden" onchange="handleJSONFile(this)" />
+		<input
+			type="file"
+			id="jsonFileInput"
+			accept=".json"
+			class="hidden"
+			onchange="handleJSONFile(this)"
+		/>
 		<!--  -->
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+		<script src="/js/toast.js"></script>
 		<script>
 			const API_BASE = "/api/data";
 			const DATA_TYPE = "labor";
 			const LS_PREFIX = "lbrtg";
 		</script>
-		<!-- 先讓瀏覽器載入 toast.js（產生 window.toast） -->
-		<script type="module" src="/js/toast.js"></script>
+		<script
+			type="module"
+			src="/js/toast.js"
+		></script>
 		<script src="/js/data.js"></script>
 		<script src="./main.js"></script>
 	</body>
