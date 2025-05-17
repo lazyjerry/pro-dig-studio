@@ -190,8 +190,8 @@ app.post("/data", async (c) => {
 
 ---
 
-感謝使用「接案仔 OFFICE」，祝開發順利！
+感謝使用「[接案仔 OFFICE](https://github.com/lazyjerry/pro-dig-studio)」，祝開發順利！
 
 ## LICENSE
 
-本專案採用 MIT License ■ 詳細內容請見 [LICENSE](LICENSE) 檔案。
+本專案採用 MIT License ■ 詳細內容請見 [LICENSE](https://github.com/lazyjerry/pro-dig-studio/blob/master/ProGigStudio/LICENSE) 檔案。
