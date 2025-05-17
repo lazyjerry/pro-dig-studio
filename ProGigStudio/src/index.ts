@@ -210,8 +210,8 @@ app.put("/api/config", async (c) => {
 	if (jsonErr) return c.json({ ok: false, error: jsonErr }, 400);
 
 	// 手動驗證（抽成工具亦可）
-	const err = validateConfig(payload);
-	if (err) return c.json({ ok: false, error: err }, 400);
+	// const err = validateConfig(payload);
+	// if (err) return c.json({ ok: false, error: err }, 400);
 
 	// 儲存
 	await saveConfig(c, payload);

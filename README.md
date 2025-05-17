@@ -24,14 +24,24 @@
 
 ## 功能概述
 
+    •	無密碼 WebAuthn 認證
+    •	支援註冊（一人）與登入（綁定註冊帳號）流程
+    •	JWT + Cookie Session 管理
+    •	報價單、會議記錄、勞報單等 HTML／PDF 範本
+    •	前端一鍵 JSON 匯入匯出、PDF下載
+    •	工作日誌（Worklog）CRUD
+    • 筆記本功能
+    • 可編輯筆記內容、上傳／下載 JSON、即時字數統計、一鍵複製
+    • 側邊欄可動態新增、開啟或移除外部連結（如 SEO 工具、iLovePDF 等）
+    • 無法嵌入 iframe 外部連結可設定另開新頁面
+
+## 技術棧
+
 - 使用 **Cloudflare Workers** 作為邊緣伺服器
 - **D1** 實作 SQL 資料庫儲存
 - **KV** 暫存快速存取資料
 - **Secret** 用於儲存敏感憑證
 - **Hono** 框架負責路由與中介層
-
-## 技術棧
-
 - **語言**：TypeScript
 - **框架**：Hono
 - **Database**：Cloudflare D1 (SQLite 兼容)
@@ -61,12 +71,33 @@ npm install hono
 專案結構預設：
 
 ```
-接案仔OFFICE/
-├─ src/
-│  ├─ index.ts      # 進入點
-│  └─ routes/       # 路由模組
-├─ wrangler.toml    # Wrangler 設定
-└─ package.json
+ProGigStudio/
+├── src/                       # 原始程式碼
+│   ├── index.ts               # Hono 應用入口
+│   ├── libs/                  # 共用工具函式
+│   │   ├── jwt.ts             # JWT 簽發與驗證
+│   │   ├── config.ts          # 組態讀寫與驗證
+│   │   └── common.ts          # Cookie、Auth 中介、JSON 解析
+│   ├── routes/                # 各路由模組
+│   │   ├── authRequired.ts    # 驗證中介
+│   │   ├── worklogs.ts        # Worklog CRUD API
+│   │   └── data.ts            # 通用資料 CRUD API
+│   └── templates/             # 動態文件 (HTML + TS)
+│       ├── meeting.html
+│       ├── meeting.ts
+│       ├── labour.html
+│       └── labour.ts
+├── public/                    # 靜態資源
+│   ├── auth.html
+│   ├── dashboard.html
+│   ├── 404.html
+│   └── logo.png
+├── migrations/                # D1 資料庫初始化 SQL
+│   └── init.sql
+├── wrangler.toml              # Wrangler 設定 (Bindings、環境...)
+├── package.json               # npm 依賴與指令
+├── tsconfig.json              # TypeScript 設定
+└── .gitignore                 # Git 忽略清單
 ```
 
 ## 環境設定
@@ -110,11 +141,11 @@ wrangler secret put API_KEY
 ### Hono 應用骨架
 
 ```ts
-import { Hono } from 'hono';
+import { Hono } from "hono";
 const app = new Hono();
 
 // 註冊 KV、D1、Secret
-app.get('/', (c) => c.text('Hello 接案仔OFFICE!'));
+app.get("/", (c) => c.text("Hello 接案仔OFFICE!"));
 
 export default app;
 ```
@@ -127,13 +158,11 @@ export default app;
 - **GET /cache/\:key** KV 讀取
 
 ```ts
-app.post('/data', async (c) => {
-  const db = c.env.DB;
-  const { name, content } = await c.req.json();
-  const result = await db.prepare(`INSERT INTO items (name, content) VALUES (?, ?)`)
-    .bind(name, content)
-    .run();
-  return c.json({ id: result.meta.last_row_id });
+app.post("/data", async (c) => {
+	const db = c.env.DB;
+	const { name, content } = await c.req.json();
+	const result = await db.prepare(`INSERT INTO items (name, content) VALUES (?, ?)`).bind(name, content).run();
+	return c.json({ id: result.meta.last_row_id });
 });
 ```
 
