@@ -118,23 +118,30 @@ d1_databases = [ { binding = "DB", database_name = "接案仔OFFICE_DB" } ]
 ### 2. KV 命名空間
 
 ```bash
-wrangler kv:namespace create "JOFFICE_CACHE"
+wrangler kv:namespace create "JOFFICE_AUTH_KV"
 ```
 
-在 `wrangler.toml` 加入：
+在 `wrangler.jsonc` 修改：
 
-```toml
-[bindings]
-kv_namespaces = [ { binding = "CACHE", id = "<剛剛產生的ID>" } ]
+```bash
+"kv_namespaces": [
+		{
+			"binding": "JOFFICE_AUTH_KV",
+			"id": "得到的ID"
+		}
+	],
 ```
 
 ### 3. Secret 設定
 
 ```bash
-wrangler secret put API_KEY
+#產生隨機密鑰
+openssl rand -base64 32
+# 添加
+wrangler secret put JWT_SECRET
 ```
 
-在 `index.ts` 中可透過 `c.env.API_KEY` 讀取。
+在 `index.ts` 中可透過 `c.env.JWT_SECRET` 讀取。
 
 ## 撰寫程式碼結構
 
@@ -149,6 +156,8 @@ app.get("/", (c) => c.text("Hello 接案仔OFFICE!"));
 
 export default app;
 ```
+
+框架細節請參考[官網](https://hono.dev/)
 
 ### 路由設計範例
 
@@ -177,7 +186,7 @@ app.post("/data", async (c) => {
 2. 部署至 Cloudflare
 
    ```bash
-   wrangler publish
+   wrangler deploy
    ```
 
 部署完成後，透過對應的 Workers URL 即可存取服務。
