@@ -105,7 +105,7 @@ ProGigStudio/
 ### 1. D1 資料庫
 
 ```bash
-wrangler d1 create 接案仔OFFICE_DB
+wrangler d1 create WORKLOG_DB
 ```
 
 在 `wrangler.toml` 加入：
