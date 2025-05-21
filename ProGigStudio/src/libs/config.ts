@@ -15,9 +15,9 @@ export async function loadConfig(c: Context) {
 		: {
 				allowRegistration: true,
 				extra: [
+					{ label: "PDF 合併", url: "https://pdf.jlab-app.cloud", token: "" },
 					{ label: "SEO檢查工具", url: "https://seo.jlab-app.cloud", token: "" },
 					{ label: "螢幕檢查工具", url: "https://screen-size-detector.jlab-app.cloud", token: "" },
-					{ label: "iLovePDF", url: "https://www.ilovepdf.com/zh-tw", token: "newWindows" },
 					{ label: "IT-TOOLS", url: "https://it-tool.jerryzheli.com", token: "" },
 				],
 		  };

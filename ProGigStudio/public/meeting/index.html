@@ -2,20 +2,47 @@
 <html lang="zh-TW">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="robots" content="noindex, nofollow" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<meta
+			name="robots"
+			content="noindex, nofollow"
+		/>
 		<title>多功能表格系統</title>
 		<!-- Favicon & Logo -->
-		<link rel="icon" type="image/png" sizes="32x32" href="/logo.png" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="/logo.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="/logo.png"
+		/>
 		<!-- <script src="https://cdn.tailwindcss.com"></script> -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		/>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-		<link href="/css/table.css" rel="stylesheet" />
-		<link href="/css/list.css" rel="stylesheet" />
+		<link
+			href="/css/table.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="/css/list.css"
+			rel="stylesheet"
+		/>
 
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+		/>
 	</head>
 	<body class="bg-gray-50">
 		<div class="container mx-auto px-4 py-8">
@@ -23,7 +50,10 @@
 			<div class="flex justify-between items-center mb-8">
 				<h1 class="text-3xl font-bold text-gray-800">會議記錄管理管理</h1>
 				<div class="flex items-center space-x-4">
-					<button id="add-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+					<button
+						id="add-btn"
+						class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center"
+					>
 						<i class="fas fa-plus mr-2"></i>
 						新增資料
 					</button>
@@ -83,27 +113,45 @@
 					<table class="min-w-full divide-y divide-gray-200">
 						<thead class="bg-gray-50">
 							<tr>
-								<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								<th
+									scope="col"
+									class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
 									ID
 								</th>
-								<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								<th
+									scope="col"
+									class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
 									名字
 								</th>
-								<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								<th
+									scope="col"
+									class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
 									創建日期
 								</th>
 
-								<th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+								<th
+									scope="col"
+									class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+								>
 									操作
 								</th>
 							</tr>
 						</thead>
-						<tbody id="table-body" class="bg-white divide-y divide-gray-200">
+						<tbody
+							id="table-body"
+							class="bg-white divide-y divide-gray-200"
+						>
 							<!-- 資料會透過JavaScript動態載入 -->
 						</tbody>
 					</table>
 				</div>
-				<div id="loading" class="p-4 hidden">
+				<div
+					id="loading"
+					class="p-4 hidden"
+				>
 					<div class="flex justify-center">
 						<div class="loading-spinner"></div>
 					</div>
@@ -111,7 +159,10 @@
 			</div>
 
 			<!-- 分頁資訊 -->
-			<div id="pagination-info" class="mt-4 text-sm text-gray-600"></div>
+			<div
+				id="pagination-info"
+				class="mt-4 text-sm text-gray-600"
+			></div>
 		</div>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
