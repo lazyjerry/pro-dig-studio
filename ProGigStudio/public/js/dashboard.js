@@ -152,6 +152,7 @@ function addExtraPage(label, url, token = "") {
 
     extraPagesContainer.removeChild(container);
     try {
+      console.log('.delete-page');
       await saveConfigSilent();
     } catch (err) {
       alert("刪除失敗，請稍後再試");
@@ -160,17 +161,6 @@ function addExtraPage(label, url, token = "") {
       extraPagesContainer.appendChild(container);
     }
   });
-
-  /* === 4. 新增後立刻同步後端 === */
-  (async () => {
-    try {
-      await saveConfigSilent();
-    } catch (err) {
-      alert("新增失敗，請稍後再試");
-      console.error(err);
-      extraPagesContainer.removeChild(container); // 復原
-    }
-  })();
 }
 
 
@@ -264,7 +254,7 @@ function bindUIEvents() {
   });
 
   // Confirm add page button click handler
-  confirmAddPage.addEventListener("click", function () {
+  confirmAddPage.addEventListener("click",async function () {
     const label = document.getElementById("page-label").value;
     const url = document.getElementById("page-url").value;
     const token = document.getElementById("page-token").value;
@@ -277,6 +267,7 @@ function bindUIEvents() {
       document.getElementById("page-label").value = "";
       document.getElementById("page-url").value = "";
       document.getElementById("page-token").value = "";
+      await saveConfigSilent();
     } else {
       alert("請填寫所有必要欄位");
     }
@@ -291,6 +282,7 @@ function bindUIEvents() {
 
     /* ---------- PUT /api/config ---------- */
     try {
+      console.log('.settingForm');
       await saveConfigSilent();
       alert("設定已儲存");
       // 如需重新載入：location.reload();
